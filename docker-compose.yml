@@ -3,11 +3,11 @@ version: "3.8"
 services:
   db:
     image: mysql:8
-    container_name: mysql_db
+    container_name: linguados_db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: login_db
+      MYSQL_DATABASE: linguados
     ports:
       - "3307:3306"
     volumes:
@@ -15,6 +15,7 @@ services:
 
   app:
     build: .
+    container_name: linguados-app
     depends_on:
       - db
     ports:
