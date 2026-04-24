@@ -2,7 +2,7 @@
    VARIÁVEIS DE CORES (TEMA ROXO)
    ========================================================================== */
 :root {
-    /* Roxo Duolingo */
+    /* Roxo Duolingo - Saturação Alta */
     --primary-purple: #7d52f4;
     --dark-purple: #5f39d1;
     --light-purple: #f3f0ff;
@@ -13,6 +13,10 @@
     --text-gray: #86868b;
     --white: #ffffff;
     --glass-bg: rgba(255, 255, 255, 0.8);
+
+    /* Feedback */
+    --error-red: #ff4b4b;
+    --success-green: #2ecc71;
 }
 
 /* ==========================================================================
@@ -29,9 +33,9 @@ body {
 }
 
 /* ==========================================================================
-   NAVBAR (GLASSMORPHISM APPLE)
+   NAVBAR (PARA LANDING PAGE / INDEX)
    ========================================================================== */
-nav {
+nav.top-nav {
     background: var(--glass-bg);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
@@ -46,80 +50,44 @@ nav {
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
-nav a {
+nav.top-nav a {
     color: var(--text-dark);
     text-decoration: none;
     font-size: 13px;
     margin: 0 18px;
-    font-weight: 400;
+    font-weight: 500;
     opacity: 0.8;
-    transition: opacity 0.2s;
+    transition: all 0.2s;
 }
 
-nav a:hover {
+nav.top-nav a:hover {
     opacity: 1;
     color: var(--primary-purple);
 }
 
 /* ==========================================================================
-   HERO SECTION
-   ========================================================================== */
-.hero {
-    padding: 120px 20px 60px;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.duck-logo {
-    font-size: 80px;
-    margin-bottom: 15px;
-    display: block;
-}
-
-.hero h1 {
-    font-family: 'Nunito', sans-serif;
-    font-size: 64px;
-    font-weight: 800;
-    margin: 0 0 15px 0;
-    letter-spacing: -1px;
-    color: var(--text-dark);
-}
-
-.hero p {
-    font-size: 24px;
-    font-weight: 500;
-    color: var(--text-gray);
-    max-width: 650px;
-    margin-bottom: 40px;
-    line-height: 1.2;
-}
-
-/* ==========================================================================
-   BOTÃO ESTILO DUOLINGO (3D ROXO)
+   BOTÕES (ESTILO DUOLINGO 3D)
    ========================================================================== */
 .btn-main {
     background-color: var(--primary-purple);
     color: var(--white);
     font-family: 'Nunito', sans-serif;
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 800;
     padding: 14px 45px;
     border-radius: 16px;
     text-decoration: none;
     text-transform: uppercase;
     display: inline-block;
-
-    /* Sombra sólida 3D */
-    box-shadow: 0 4px 0 var(--dark-purple);
-    transition: filter 0.2s, transform 0.1s;
     border: none;
     cursor: pointer;
+    box-shadow: 0 4px 0 var(--dark-purple);
+    transition: filter 0.2s, transform 0.1s;
+    text-align: center;
 }
 
 .btn-main:hover {
-    filter: brightness(1.08);
+    filter: brightness(1.1);
 }
 
 .btn-main:active {
@@ -127,57 +95,65 @@ nav a:hover {
     box-shadow: 0 0 0 var(--dark-purple);
 }
 
-/* ==========================================================================
-   CARDS DE FEATURES (APPLE STYLE)
-   ========================================================================== */
-.features {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 30px;
-    padding: 80px 20px;
+/* Botão Secundário (Cinza Apple) */
+.btn-secondary {
     background-color: var(--apple-gray);
-}
-
-.card {
-    background: var(--white);
-    padding: 40px;
-    border-radius: 28px;
-    width: 320px;
-    box-sizing: border-box;
-    text-align: left;
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
-}
-
-.card:hover {
-    transform: scale(1.03);
-}
-
-.card h3 {
-    font-family: 'Nunito', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-.card p {
-    color: var(--text-gray);
-    line-height: 1.5;
-    font-size: 16px;
-    margin: 0;
+    color: var(--text-dark);
+    box-shadow: 0 4px 0 #d1d1d6;
 }
 
 /* ==========================================================================
-   UTILITÁRIOS (BADGES)
+   FORMULÁRIOS (LOGIN / CADASTRO)
+   ========================================================================== */
+.input-group {
+    margin-bottom: 20px;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid #e5e5e5;
+    border-radius: 16px;
+    font-size: 16px;
+    background-color: #f7f7f7;
+    box-sizing: border-box;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--primary-purple);
+    background-color: var(--white);
+}
+
+/* ==========================================================================
+   UTILITÁRIOS
    ========================================================================== */
 .xp-badge {
-    background: var(--light-purple);
-    color: var(--primary-purple);
+    background: var(--primary-purple);
+    color: var(--white);
     padding: 6px 14px;
     border-radius: 12px;
     font-weight: 800;
     font-size: 13px;
-    border: 1.5px solid var(--primary-purple);
     font-family: 'Nunito', sans-serif;
+    display: inline-block;
 }
+
+.text-purple { color: var(--primary-purple); }
+.mt-20 { margin-top: 20px; }
+.text-center { text-align: center; }
+
+/* Mensagens de Erro/Sucesso */
+.alert {
+    padding: 15px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+    font-weight: 600;
+    font-size: 14px;
+}
+.alert-error { background: #ffe5e5; color: var(--error-red); border: 1px solid var(--error-red); }
+.alert-success { background: #eafff2; color: var(--success-green); border: 1px solid var(--success-green); }

@@ -1,11 +1,14 @@
-/* Layout Principal */
+/* ==========================================================================
+   LAYOUT GERAL DO DASHBOARD
+   ========================================================================== */
 .dashboard-body {
     display: flex;
-    background-color: #f8f9fe; /* Cinza azulado muito leve */
+    background-color: #f8f9fe; /* Fundo leve para destacar os cards brancos */
     min-height: 100vh;
+    margin: 0;
 }
 
-/* Sidebar */
+/* Sidebar Fixa à Esquerda */
 .sidebar {
     width: 260px;
     background: white;
@@ -15,8 +18,21 @@
     border-right: 1px solid #eef0f7;
     position: fixed;
     height: 100vh;
+    box-sizing: border-box;
+    z-index: 100;
 }
 
+/* Área de Conteúdo Principal */
+.main-content {
+    margin-left: 260px; /* Mesma largura da sidebar para não sobrepor */
+    padding: 40px;
+    width: calc(100% - 260px);
+    box-sizing: border-box;
+}
+
+/* ==========================================================================
+   COMPONENTES DA SIDEBAR
+   ========================================================================== */
 .sidebar-logo {
     font-family: 'Nunito', sans-serif;
     font-size: 22px;
@@ -25,120 +41,209 @@
     margin-bottom: 40px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
 }
 
 .logo-icon {
     background: var(--primary-purple);
     color: white;
-    padding: 5px 12px;
-    border-radius: 10px;
+    padding: 6px 14px;
+    border-radius: 12px;
 }
 
 .sidebar-nav {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     flex-grow: 1;
 }
 
 .sidebar-nav a {
-    padding: 12px 15px;
-    border-radius: 12px;
+    padding: 14px 18px;
+    border-radius: 14px;
     color: #8e8e93;
     text-decoration: none;
     font-weight: 600;
-    transition: 0.3s;
+    font-size: 15px;
+    transition: all 0.2s ease;
 }
 
-.sidebar-nav a.active, .sidebar-nav a:hover {
-    background: #f3f0ff;
+.sidebar-nav a.active,
+.sidebar-nav a:hover {
+    background: var(--light-purple);
     color: var(--primary-purple);
 }
 
 .sidebar-user {
     background: #f8f9fe;
-    padding: 15px;
-    border-radius: 16px;
+    padding: 12px;
+    border-radius: 18px;
     display: flex;
     align-items: center;
     gap: 12px;
+    margin-top: 20px;
 }
 
-.user-avatar img { width: 40px; border-radius: 50%; }
-.user-name { display: block; font-weight: 700; font-size: 14px; }
-.user-level { font-size: 12px; color: #8e8e93; }
-
-/* Main Content Area */
-.main-content {
-    margin-left: 260px;
-    padding: 40px;
-    width: 100%;
+.user-avatar img {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: #e5e5e5;
 }
 
+/* ==========================================================================
+   BANNER DE BOAS-VINDAS & STATS
+   ========================================================================== */
 .welcome-banner {
     display: flex;
     justify-content: space-between;
     align-items: center;
     background: white;
-    padding: 30px;
-    border-radius: 24px;
+    padding: 35px;
+    border-radius: 28px;
     margin-bottom: 30px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
 }
 
-.welcome-text h1 { font-size: 28px; margin-bottom: 8px; }
-.welcome-text p { color: #8e8e93; }
+.welcome-text h1 { font-size: 32px; margin: 0 0 8px 0; }
+.welcome-text p { color: #8e8e93; margin: 0; font-size: 16px; }
 
-/* Stats Cards */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.stat-card {
-    background: white;
-    padding: 20px;
+.streak-mini-card {
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 15px 20px;
     border-radius: 20px;
     display: flex;
     align-items: center;
     gap: 15px;
+    max-width: 250px;
 }
 
-.stat-label { font-size: 11px; font-weight: 800; color: #aeaeae; display: block; }
-.stat-value { font-size: 22px; font-weight: 800; }
+.duck-emoji { font-size: 30px; }
 
-/* Banner Roxo de Desafio */
+/* Grid de Stats (Top 4) */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+    margin-bottom: 40px;
+}
+
+.stat-card {
+    background: white;
+    padding: 24px;
+    border-radius: 24px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+
+.stat-icon { font-size: 24px; }
+.stat-label { font-size: 11px; font-weight: 800; color: #aeaeae; text-transform: uppercase; }
+.stat-value { font-size: 24px; font-weight: 800; display: block; }
+
+/* ==========================================================================
+   LAYOUT SPLIT (ESQUERDA / DIREITA)
+   ========================================================================== */
+.dashboard-split {
+    display: grid;
+    grid-template-columns: 2fr 1fr; /* Coluna da esquerda é o dobro da direita */
+    gap: 30px;
+}
+
+/* Card Roxo de Desafio Diário */
 .daily-challenge-card {
     background: var(--primary-purple);
     color: white;
-    padding: 30px;
-    border-radius: 24px;
+    padding: 40px;
+    border-radius: 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 30px;
+    margin-bottom: 40px;
+}
+
+.badge-mini {
+    background: rgba(255,255,255,0.2);
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 800;
 }
 
 .btn-start {
     background: white;
     color: var(--primary-purple);
-    padding: 12px 25px;
-    border-radius: 12px;
+    padding: 14px 28px;
+    border-radius: 16px;
     text-decoration: none;
     font-weight: 800;
+    transition: transform 0.2s;
 }
 
-/* Progress Bars */
-.progress-bar-container {
-    background: #eee;
-    height: 8px;
-    border-radius: 10px;
+.btn-start:hover { transform: scale(1.05); }
+
+/* Learning Paths Cards */
+.learning-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.path-card {
+    background: white;
+    padding: 30px;
+    border-radius: 28px;
+    position: relative;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+
+.level-tag {
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 8px;
+    position: absolute;
+    top: 30px;
+    right: 30px;
+}
+
+.level-tag.beginner { background: #e8f7ee; color: #2ecc71; }
+.level-tag.intermediate { background: #fff3e6; color: #ff9f43; }
+
+.btn-resume {
     width: 100%;
-    margin: 10px 0;
+    padding: 12px;
+    border-radius: 14px;
+    border: none;
+    background: #f0f0f5;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 15px;
 }
 
-.progress-fill { height: 100%; border-radius: 10px; }
-.progress-fill.purple { background: var(--primary-purple); }
-.progress-fill.green { background: #2ecc71; }
+/* Weekly Activity (Coluna da Direita) */
+.activity-card {
+    background: white;
+    padding: 30px;
+    border-radius: 28px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+}
+
+.activity-list {
+    list-style: none;
+    padding: 0;
+    margin: 20px 0;
+}
+
+.activity-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 0;
+    border-bottom: 1px solid #f0f0f5;
+    font-size: 14px;
+}
+
+.activity-list li.current { color: var(--primary-purple); font-weight: 700; }
+.activity-list li.done span::before { content: "✓ "; color: #2ecc71; }

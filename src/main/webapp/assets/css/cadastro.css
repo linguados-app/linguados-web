@@ -1,9 +1,14 @@
+/* ==========================================================================
+   TELA DE CADASTRO
+   ========================================================================== */
+
 .cadastro-container {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    background-color: white;
+    /* Mesma transição suave do login */
+    background: linear-gradient(135deg, #ffffff 0%, var(--light-purple) 100%);
     padding: 20px;
 }
 
@@ -12,27 +17,32 @@
     max-width: 420px;
     padding: 40px;
     text-align: center;
+    background: var(--white);
+    border-radius: 32px; /* Estilo "Squircle" da Apple */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
 }
 
 .cadastro-card h2 {
     font-family: 'Nunito', sans-serif;
     font-size: 32px;
-    margin-bottom: 10px;
-    color: #3c3c3c;
+    font-weight: 800;
+    margin-bottom: 8px;
+    color: var(--text-dark);
 }
 
 .subtitle {
-    color: #777;
+    color: var(--text-gray);
     margin-bottom: 30px;
     font-size: 16px;
+    line-height: 1.4;
 }
 
 .input-group {
-    margin-bottom: 15px;
+    margin-bottom: 18px;
     text-align: left;
 }
 
-/* Estilo Apple: Inputs com fundo leve e bordas suaves */
+/* Estilo Apple: Inputs consistentes em todo o site */
 input[type="text"],
 input[type="email"],
 input[type="password"] {
@@ -41,32 +51,39 @@ input[type="password"] {
     border: 2px solid #e5e5e5;
     border-radius: 16px;
     font-size: 16px;
-    background-color: #f7f7f7;
+    background-color: var(--apple-gray);
     box-sizing: border-box;
-    transition: border-color 0.3s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 input:focus {
     outline: none;
     border-color: var(--primary-purple);
-    background-color: white;
+    background-color: var(--white);
+    box-shadow: 0 0 0 4px var(--light-purple);
 }
 
+/* Botão de Cadastro (Herdando o 3D do Duolingo) */
 .btn-cadastro {
     width: 100%;
-    padding: 16px;
-    font-size: 17px;
-    margin-top: 20px;
+    margin-top: 10px;
+    /* A classe .btn-main cuidará do resto do visual roxo */
 }
 
 .footer-links {
-    margin-top: 25px;
+    margin-top: 30px;
     font-size: 15px;
-    color: #86868b;
+    color: var(--text-gray);
 }
 
 .footer-links a {
-    border-color: var(--primary-purple);
+    color: var(--primary-purple); /* Mudado de border-color para color */
     text-decoration: none;
-    font-weight: bold;
+    font-weight: 700;
+    transition: filter 0.2s;
+}
+
+.footer-links a:hover {
+    filter: brightness(0.8);
+    text-decoration: underline;
 }
