@@ -1,0 +1,52 @@
+.resolver-container {
+    max-width: 600px;
+    margin: 80px auto;
+    padding: 20px;
+    text-align: center;
+}
+
+.pergunta-box {
+    background: white;
+    border: 2px solid #e5e5e5;
+    border-radius: 24px;
+    padding: 40px;
+    margin-bottom: 30px;
+    box-shadow: 0 4px 0 #e5e5e5; /* Sombra sólida estilo Duo */
+}
+
+.pergunta-texto {
+    font-size: 22px;
+    color: #4b4b4b;
+    margin-bottom: 25px;
+    line-height: 1.4;
+}
+
+.input-resposta {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid #e5e5e5;
+    border-radius: 16px;
+    font-size: 18px;
+    margin-bottom: 20px;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.input-resposta:focus {
+    border-color: #1cb0f6; /* Azul do Duolingo para foco */
+}
+
+/* Feedback visual rápido */
+.feedback-banner {
+    padding: 15px;
+    border-radius: 16px;
+    margin-bottom: 20px;
+    font-weight: 800;
+    display: ${param.feedback == null ? 'none' : 'block'};
+}
+
+.feedback-errou {
+    background-color: #ffdfe0;
+    color: #ea2b2b;
+    border: 2px solid #ffc1c1;
+}

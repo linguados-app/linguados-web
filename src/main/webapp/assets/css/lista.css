@@ -1,0 +1,34 @@
+.grid-desafios {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 25px;
+    padding: 40px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+.card-desafio {
+    background: white;
+    border: 2px solid #e5e5e5;
+    border-radius: 20px;
+    padding: 24px;
+    text-align: center;
+    transition: transform 0.2s;
+}
+.card-desafio:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-purple);
+}
+.xp-badge {
+    background-color: #FFC800; /* Amarelo "Gema de Ovo" (bem saturado) */
+    color: #000000;            /* Preto para contraste total */
+    padding: 6px 14px;
+    border-radius: 12px;
+    font-weight: 800;
+    font-size: 13px;
+    text-transform: uppercase;
+
+    /* Borda inferior escura para tirar o efeito "faded" */
+    border-bottom: 3px solid #E5A100;
+    display: inline-block;
+    text-shadow: 0px 1px 0px rgba(0,0,0,0.1); /* Dá uma leve nitidez ao texto */
+}

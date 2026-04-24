@@ -1,25 +1,49 @@
 package com.linguados.usuario;
 
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.*;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.io.IOException;
 
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp)
-            throws ServletException, IOException {
+    private LoginDAO loginDAO = new LoginDAO();
 
-        req.getRequestDispatcher("/WEB-INF/views/usuario/login.jsp").forward(req, resp);
+    /**
+     * doGet: Apenas exibe a página de login
+     */
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/views/usuario/login.jsp").forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+    /**
+     * doPost: Recebe os dados do formulário e processa o login
+     */
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
 
-        String email = req.getParameter("email");
-        String senha = req.getParameter("senha");
+        String email = request.getParameter("email");
+        String senha = request.getParameter("password");
 
-        resp.sendRedirect("home.jsp");
+        Usuario usuario = loginDAO.autenticar(email, senha);
+
+        if (usuario != null) {
+            // LOGIN SUCESSO: Cria a sessão
+            HttpSession session = request.getSession();
+            session.setAttribute("usuarioLogado", usuario);
+
+            // Redireciona para a lista de desafios
+            response.sendRedirect("desafios");
+        } else {
+            // LOGIN FALHOU: Volta para a página de login com erro na URL
+            response.sendRedirect("login?erro=1");
+        }
     }
 }

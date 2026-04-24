@@ -5,7 +5,7 @@ USE linguados;
 -- 1. Tabela de Usuários
 CREATE TABLE IF NOT EXISTS usuario (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(100),
+    nome VARCHAR(100) NOT NULL,
     email VARCHAR(100) NOT NULL UNIQUE,
     senha VARCHAR(50) NOT NULL,
     xp INT DEFAULT 0,
@@ -48,8 +48,8 @@ CREATE TABLE IF NOT EXISTS conquista (
 
 -- Povoamento:
 -- Insere alguns registros iniciais para teste
-INSERT IGNORE INTO usuario (username, senha) VALUES
-('admin', 'admin123');
+INSERT IGNORE INTO usuario (nome, email, senha) VALUES
+('admin', 'admin@admin.com', 'admin123');
 
 INSERT IGNORE INTO desafio (titulo, descricao, pontos_xp, dificuldade) VALUES
 ('Ola Mundo', 'Imprima sua primeira mensagem no console Java.', 10, 'Facil'),

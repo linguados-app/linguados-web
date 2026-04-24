@@ -6,12 +6,11 @@ import java.sql.SQLException;
 
 public class DatabaseConfig {
 
-    // 1. Tenta pegar o Host (localhost ou db), se não houver, usa localhost
+    // No Docker Compose, o nome do serviço é "linguados-db"
     private static final String HOST = System.getenv("DB_HOST") != null
             ? System.getenv("DB_HOST")
-            : "localhost";
+            : "linguados-db";
 
-    // 2. Tenta pegar a Porta, se não houver, usa a 3306 (padrão do grupo)
     private static final String PORT = System.getenv("DB_PORT") != null
             ? System.getenv("DB_PORT")
             : "3306";
@@ -20,21 +19,18 @@ public class DatabaseConfig {
     private static final String USER = "root";
     private static final String PASSWORD = "root";
 
-    // 3. Monta a URL usando Host e Porta dinâmicos + parâmetros de segurança
     private static final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DB_NAME
             + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 
-    private static Connection connection = null;
-
     public static Connection getConnection() throws SQLException {
-        if (connection == null || connection.isClosed()) {
-            try {
-                Class.forName("com.mysql.cj.jdbc.Driver");
-                connection = DriverManager.getConnection(URL, USER, PASSWORD);
-            } catch (ClassNotFoundException e) {
-                throw new SQLException("Driver MySQL não encontrado...", e);
-            }
+        try {
+            // Em ambientes Tomcat, forçar o carregamento do driver é uma boa prática
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+
+        } catch (ClassNotFoundException e) {
+            throw new SQLException("Driver MySQL não encontrado no classpath do Tomcat.", e);
         }
-        return connection;
     }
 }

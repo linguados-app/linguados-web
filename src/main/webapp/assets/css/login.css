@@ -3,7 +3,7 @@
     justify-content: center;
     align-items: center;
     height: 100vh;
-    background-color: white; /* Estilo Apple: Fundo limpo */
+    background: linear-gradient(135deg, #ffffff 0%, #f3f0ff 100%);
 }
 
 .login-card {
@@ -38,7 +38,8 @@ input[type="email"], input[type="password"] {
 
 input:focus {
     outline: none;
-    border-color: var(--duo-green);
+    border-color: var(--primary-purple);
+    background-color: white;
 }
 
 .btn-login {
