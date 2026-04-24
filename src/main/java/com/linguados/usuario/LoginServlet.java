@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
             session.setAttribute("usuarioLogado", usuario);
 
             // Redireciona para a lista de desafios
-            response.sendRedirect("desafios");
+            response.sendRedirect("dashboard");
         } else {
             // LOGIN FALHOU: Volta para a página de login com erro na URL
             response.sendRedirect("login?erro=1");

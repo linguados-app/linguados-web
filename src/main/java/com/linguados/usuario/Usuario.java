@@ -45,9 +45,9 @@ public class Usuario implements Serializable {
     public int getNivel() { return nivel; }
     public void setNivel(int nivel) { this.nivel = nivel; }
 
-    // Método utilitário para facilitar a exibição no JSP
+    // Metodo utilitário para facilitar a exibição no JSP
     public String getPrimeiroNome() {
-        if (nome == null || nome.isEmpty()) return "";
-        return nome.split(" ")[0];
+        if (this.nome == null || this.nome.isEmpty()) return "Dev";
+        return this.nome.split(" ")[0]; // Pega apenas a primeira palavra do nome
     }
 }
