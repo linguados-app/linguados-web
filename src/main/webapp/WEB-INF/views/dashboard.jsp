@@ -22,7 +22,7 @@
 
         <nav style="display:flex; flex-direction:column; gap:10px; flex-grow:1;">
             <a href="#" style="text-decoration:none; color:var(--primary-purple); font-weight:bold;">📊 <span class="nav-text">Dashboard</span></a>
-            <a href="#" style="text-decoration:none; color:var(--text-gray);">📖 <span class="nav-text">Lessons</span></a>
+            <a href="desafios" style="text-decoration:none; color:var(--text-gray);">📖 <span class="nav-text">Lessons</span></a>
         </nav>
 
         <div class="user-info" style="border-top: 1px solid #eee; padding-top: 20px;">

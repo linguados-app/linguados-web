@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS desafio (
     titulo VARCHAR(150) NOT NULL,
     descricao TEXT,
     pontos_xp INT NOT NULL,
-    dificuldade ENUM('Facil', 'Medio', 'Dificil') DEFAULT 'Facil'
+    dificuldade ENUM('Facil', 'Medio', 'Dificil') DEFAULT 'Facil',
+    tipo ENUM('Traducao', 'Lacuna', 'Multipla') NOT NULL
     );
 
 -- 3. Tabela de Progresso (Relaciona Usuário com Desafio)
@@ -51,7 +52,7 @@ CREATE TABLE IF NOT EXISTS conquista (
 INSERT IGNORE INTO usuario (nome, email, senha) VALUES
 ('admin', 'admin@admin.com', 'admin123');
 
-INSERT IGNORE INTO desafio (titulo, descricao, pontos_xp, dificuldade) VALUES
-('Ola Mundo', 'Imprima sua primeira mensagem no console Java.', 10, 'Facil'),
-('Variaveis e Tipos', 'Declare variaveis de diferentes tipos primitivos.', 20, 'Facil'),
-('Estruturas de Repeticao', 'Crie um loop que conte ate 100.', 50, 'Medio');
+INSERT IGNORE INTO desafio (titulo, descricao, pontos_xp, dificuldade, tipo) VALUES
+('Ola Mundo', 'Imprima sua primeira mensagem no console Java.', 10, 'Facil', 'Traducao'),
+('Variaveis e Tipos', 'Declare variaveis de diferentes tipos primitivos.', 20, 'Facil', 'Lacuna'),
+('Estruturas de Repeticao', 'Crie um loop que conte ate 100.', 50, 'Medio', 'Multipla');
