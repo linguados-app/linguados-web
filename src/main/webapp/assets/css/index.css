@@ -1,0 +1,53 @@
+/* Navbar Superior da Landing */
+.top-nav {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    height: 64px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.top-nav .logo { font-weight: 800; font-size: 20px; font-family: 'Nunito'; }
+.top-nav a { text-decoration: none; color: var(--text-dark); font-weight: 500; margin-left: 20px; }
+
+/* Hero Section */
+.hero {
+    padding: 160px 20px 80px;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero .duck-logo { font-size: 80px; margin-bottom: 20px; display: block; }
+
+.hero h1 {
+    font-size: 56px;
+    font-family: 'Nunito', sans-serif;
+    line-height: 1.1;
+    margin-bottom: 24px;
+}
+
+/* Features */
+.features {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 80px 20px;
+    background: var(--apple-gray);
+}
+
+.feat-card {
+    background: white;
+    padding: 40px;
+    border-radius: 28px;
+    width: 320px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.02);
+}
