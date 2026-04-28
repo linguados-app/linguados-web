@@ -44,10 +44,8 @@ O projeto utiliza uma estrutura modular baseada em **Package by Feature**, facil
     docker-compose up -d --build
     ```
     
-3. Acesse a aplicação em um navegador através do endereço:
-    ```bash
-    http://localhost:8080/
-    ```
+3. Acesse a aplicação em um navegador através do link a seguir:
+ - [Linguados - Plataforma Online de Inglês Instrumental](http://localhost:8080/)
 
 ## 📂 Estrutura de Pastas
 
