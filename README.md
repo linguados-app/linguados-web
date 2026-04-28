@@ -35,18 +35,18 @@ O projeto utiliza uma estrutura modular baseada em **Package by Feature**, facil
 
 1. **Clone o repositório:**
    ```bash
-   git clone https://github.com/andreasgunther/linguados
-   cd linguados
+   git clone https://github.com/andreasgunther/linguados-web
+   cd linguados-web
    ```
 
 2. Suba o ambiente com Docker:
     ```bash
-    docker-compose up -d
+    docker-compose up -d --build
     ```
     
-3. Execute a aplicação:
+3. Acesse a aplicação em um navegador através do endereço:
     ```bash
-    docker exec -it linguados-app java -jar target/linguados-1.0.0-SNAPSHOT.jar
+    http://localhost:8080/
     ```
 
 ## 📂 Estrutura de Pastas
@@ -55,8 +55,7 @@ O projeto utiliza uma estrutura modular baseada em **Package by Feature**, facil
     ├── Main.java           # Ponto de entrada (Bootstrap)
     ├── auth/               # Módulo de Autenticação e Login
     ├── desafio/            # Core pedagógico e motor de exercícios
-    ├── usuario/            # Gestão de perfis e dados do estudante
-    └── gamificacao/        # Lógica de XP, Ofensivas (Streaks) e Ranking
+    └── usuario/            # Gestão de perfis e dados do estudante
 
 ## Metodologia de Desenvolvimento
 
