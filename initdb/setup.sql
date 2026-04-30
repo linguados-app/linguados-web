@@ -23,6 +23,37 @@ CREATE TABLE IF NOT EXISTS desafio (
     tipo ENUM('Traducao', 'Lacuna', 'Multipla') NOT NULL
     );
 
+-- 2. Tabela para Desafio de Tradução
+CREATE TABLE desafio_traducao (
+    id_desafio INT PRIMARY KEY,
+    resposta_correta VARCHAR(255) NOT NULL,
+    FOREIGN KEY (id_desafio) REFERENCES desafio(id) ON DELETE CASCADE
+    );
+
+-- 3. Tabela para Desafio de Lacuna (Fill in the blanks)
+CREATE TABLE desafio_lacuna (
+    id_desafio INT PRIMARY KEY,
+    texto_antes VARCHAR(255),  -- Parte da frase antes da lacuna
+    texto_depois VARCHAR(255), -- Parte da frase depois da lacuna
+    palavra_omitida VARCHAR(50) NOT NULL, -- A resposta correta
+    FOREIGN KEY (id_desafio) REFERENCES desafio(id) ON DELETE CASCADE
+);
+
+-- 4. Tabela para Desafio de Múltipla Escolha
+CREATE TABLE desafio_multipla_escolha (
+    id_desafio INT PRIMARY KEY,
+    FOREIGN KEY (id_desafio) REFERENCES desafio(id) ON DELETE CASCADE
+);
+
+-- 5. Tabela de Alternativas (Relacionada à Múltipla Escolha)
+CREATE TABLE alternativa (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_desafio INT NOT NULL,
+    texto VARCHAR(255) NOT NULL,
+    eh_correta BOOLEAN DEFAULT FALSE, -- Define se esta é a resposta certa
+    FOREIGN KEY (id_desafio) REFERENCES desafio_multipla_escolha(id_desafio) ON DELETE CASCADE
+    );
+
 -- 3. Tabela de Progresso (Relaciona Usuário com Desafio)
 -- Esta tabela registra quando um usuário conclui um desafio específico
 CREATE TABLE IF NOT EXISTS progresso (
