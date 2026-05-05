@@ -9,7 +9,7 @@ import java.sql.SQLException;
 public class LoginDAO {
 
     public Usuario autenticar(String email, String senha) {
-        String sql = "SELECT id, nome, email, xp, nivel FROM usuario WHERE email = ? AND senha = ?";
+        String sql = "SELECT id, nome, email, xp, nivel, streak FROM usuario WHERE email = ? AND senha = ?";
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -25,7 +25,8 @@ public class LoginDAO {
                             rs.getString("nome"),
                             rs.getString("email"),
                             rs.getInt("xp"),
-                            rs.getInt("nivel")
+                            rs.getInt("nivel"),
+                            rs.getInt("streak")
                     );
                 }
             }

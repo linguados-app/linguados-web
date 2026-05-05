@@ -1,6 +1,7 @@
 package com.linguados.dashboard;
 
 import com.linguados.usuario.Usuario;
+import com.linguados.usuario.UsuarioService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,20 +18,18 @@ public class DashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1. SEGURANÇA: Recupera a sessão e o usuário
+        // 1. Recupera a sessão e o usuario
         HttpSession session = request.getSession();
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
 
-        // 2. REDIRECIONAMENTO: Se não estiver logado, volta para o login
+        UsuarioService service = new UsuarioService();
+        usuario = service.atualizarStreak(usuario);
+
+        // 2. Se não estiver logado, volta para o login
         if (usuario == null) {
             response.sendRedirect("login");
             return;
         }
-
-        // 3. LOGICA DE NEGÓCIO (Opcional):
-        // Se você quiser buscar dados em tempo real (como o ranking atual),
-        // você chamaria um DAO aqui e colocaria no request.
-        // Exemplo: request.setAttribute("topUsuarios", rankingDAO.listarTop5());
 
         // 4. EXIBIÇÃO: Encaminha para o JSP que criamos
         request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);

@@ -1,6 +1,8 @@
 package com.linguados.usuario;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Date;
 
 /**
  * Implementamos Serializable para que o Tomcat consiga
@@ -13,17 +15,20 @@ public class Usuario implements Serializable {
     private String senha;
     private int xp;
     private int nivel;
+    private int streak;
+    private LocalDate ultimoAcesso;
 
     // Construtor padrão (obrigatório para Javabeans)
     public Usuario() {}
 
     // Construtor para facilitar a criação via DAO
-    public Usuario(int id, String nome, String email, int xp, int nivel) {
+    public Usuario(int id, String nome, String email, int xp, int nivel, int streak) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.xp = xp;
         this.nivel = nivel;
+        this.streak = streak;
     }
 
     // Getters e Setters
@@ -44,6 +49,12 @@ public class Usuario implements Serializable {
 
     public int getNivel() { return nivel; }
     public void setNivel(int nivel) { this.nivel = nivel; }
+
+    public int getStreak() { return streak; }
+    public void setStreak(int streak) { this.streak = streak; }
+
+    public LocalDate getUltimoAcesso() { return ultimoAcesso; }
+    public void setUltimoAcesso(LocalDate ultimoAcesso) { this.ultimoAcesso = ultimoAcesso; }
 
     // Metodo utilitário para facilitar a exibição no JSP
     public String getPrimeiroNome() {

@@ -32,29 +32,177 @@
     </aside>
 
     <main class="main-content">
-        <h1>Welcome back, ${usuarioLogado.getPrimeiroNome()}! 👋</h1>
+        <main class="main-content">
 
-        <section class="stats-grid">
-            <div class="stat-card">⭐ <div><small>XP</small><br><strong>${usuarioLogado.xp}</strong></div></div>
-            <div class="stat-card">🔥 <div><small>STREAK</small><br><strong>3 Days</strong></div></div>
-        </section>
+            <!-- Linha 1 -->
+            <section class="hero-grid">
 
-        <div class="daily-card">
-            <div>
-                <small>DAILY CHALLENGE</small>
-                <h2>API Documentation Mastery</h2>
-            </div>
-            <a href="#" class="btn-main" style="background:white; color:var(--primary-purple); box-shadow:none;">Start</a>
-        </div>
+                <div class="card welcome-card">
+                    <div>
+                        <small class="card-label">WELCOME BACK</small>
+                        <h1>Welcome back, ${usuarioLogado.getPrimeiroNome()}! 👋</h1>
+                        <p class="card-subtitle">
+                            Continue de onde parou e avance mais um passo na sua jornada de aprendizado.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="card duck-card">
+                    <div class="duck-emoji">🦆</div>
+                    <div>
+                        <small class="card-label">LINGUADOS TIP</small>
+                        <h3>One lesson at a time.</h3>
+                        <p class="card-subtitle">
+                            Pequenos passos diários geram progresso real.
+                        </p>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Linha 2 -->
+            <section class="stats-grid">
+
+                <div class="card stat-card">
+                    <span class="stat-icon">⭐</span>
+                    <div>
+                        <small>Total XP</small>
+                        <strong>${usuarioLogado.xp}</strong>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <span class="stat-icon">🏆</span>
+                    <div>
+                        <small>Level</small>
+                        <strong>${usuarioLogado.nivel}</strong>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <span class="stat-icon">🔥</span>
+                    <div>
+                        <small>Streak</small>
+                        <strong>${usuarioLogado.streak} days</strong>
+                    </div>
+                </div>
+
+                <div class="card stat-card">
+                    <span class="stat-icon">🎯</span>
+                    <div>
+                        <small>Daily Goal</small>
+                        <strong>2 / 5 lessons</strong>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Weekly activity -->
+            <section class="card weekly-card">
+                <div class="section-header">
+                    <div>
+                        <small class="card-label">WEEKLY ACTIVITY</small>
+                        <h2>Your progress this week</h2>
+                    </div>
+                </div>
+
+                <div class="weekly-bars">
+                    <div class="bar-item">
+                        <div class="bar" style="height:55%"></div>
+                        <span>Mon</span>
+                    </div>
+
+                    <div class="bar-item">
+                        <div class="bar" style="height:80%"></div>
+                        <span>Tue</span>
+                    </div>
+
+                    <div class="bar-item">
+                        <div class="bar" style="height:45%"></div>
+                        <span>Wed</span>
+                    </div>
+
+                    <div class="bar-item">
+                        <div class="bar" style="height:95%"></div>
+                        <span>Thu</span>
+                    </div>
+
+                    <div class="bar-item">
+                        <div class="bar" style="height:70%"></div>
+                        <span>Fri</span>
+                    </div>
+
+                    <div class="bar-item">
+                        <div class="bar" style="height:30%"></div>
+                        <span>Sat</span>
+                    </div>
+
+                    <div class="bar-item">
+                        <div class="bar" style="height:60%"></div>
+                        <span>Sun</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trilhas -->
+            <section class="card trails-card">
+
+                <div class="section-header">
+                    <div>
+                        <small class="card-label">IN PROGRESS</small>
+                        <h2>Knowledge paths</h2>
+                    </div>
+                </div>
+
+                <div class="trails-grid">
+
+                    <div class="trail-item">
+                        <div class="trail-top">
+                            <div>
+                                <h3>API Documentation</h3>
+                                <p>4 of 8 lessons completed</p>
+                            </div>
+                            <span>50%</span>
+                        </div>
+
+                        <div class="progress">
+                            <div class="progress-fill" style="width:50%"></div>
+                        </div>
+                    </div>
+
+                    <div class="trail-item">
+                        <div class="trail-top">
+                            <div>
+                                <h3>Technical Reading</h3>
+                                <p>6 of 10 lessons completed</p>
+                            </div>
+                            <span>60%</span>
+                        </div>
+
+                        <div class="progress">
+                            <div class="progress-fill" style="width:60%"></div>
+                        </div>
+                    </div>
+
+                    <div class="trail-item">
+                        <div class="trail-top">
+                            <div>
+                                <h3>Software Vocabulary</h3>
+                                <p>2 of 6 lessons completed</p>
+                            </div>
+                            <span>33%</span>
+                        </div>
+
+                        <div class="progress">
+                            <div class="progress-fill" style="width:33%"></div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+        </main>
     </main>
-
-    <script>
-        const btn = document.getElementById('toggle-btn');
-        const sidebar = document.getElementById('sidebar');
-
-        btn.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-        });
-    </script>
+    <script src="${pageContext.request.contextPath}/assets/js/dashboard.js"></script>
 </body>
 </html>

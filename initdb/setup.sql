@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS usuario (
     senha VARCHAR(50) NOT NULL,
     xp INT DEFAULT 0,
     nivel INT DEFAULT 1,
-    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    streak INT DEFAULT 0
     );
 
 -- 2. Tabela de Desafios
