@@ -88,3 +88,37 @@ INSERT IGNORE INTO desafio (titulo, descricao, pontos_xp, dificuldade, tipo) VAL
 ('Ola Mundo', 'Imprima sua primeira mensagem no console Java.', 10, 'Facil', 'Traducao'),
 ('Variaveis e Tipos', 'Declare variaveis de diferentes tipos primitivos.', 20, 'Facil', 'Lacuna'),
 ('Estruturas de Repeticao', 'Crie um loop que conte ate 100.', 50, 'Medio', 'Multipla');
+
+CREATE TABLE modulos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(120) NOT NULL,
+    descricao TEXT,
+    ordem INT DEFAULT 0,
+    ativo BOOLEAN DEFAULT TRUE
+);
+
+CREATE TABLE questoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    modulo_id INT NOT NULL,
+    enunciado TEXT NOT NULL,
+    tipo VARCHAR(30) NOT NULL,
+    ordem INT DEFAULT 0,
+    xp INT DEFAULT 10,
+    ativo BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (modulo_id) REFERENCES modulos(id)
+);
+
+CREATE TABLE alternativas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    questao_id INT NOT NULL,
+    texto VARCHAR(255) NOT NULL,
+    correta BOOLEAN DEFAULT FALSE,
+    FOREIGN KEY (questao_id) REFERENCES questoes(id)
+);
+
+CREATE TABLE respostas (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    questao_id INT NOT NULL,
+    resposta VARCHAR(255) NOT NULL,
+    FOREIGN KEY (questao_id) REFERENCES questoes(id)
+);

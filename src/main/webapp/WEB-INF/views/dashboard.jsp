@@ -200,6 +200,10 @@
 
                 </div>
             </section>
+            
+            <a href="${pageContext.request.contextPath}/admin/modulos">
+                Gerenciar módulos
+            </a>
 
         </main>
     </main>
