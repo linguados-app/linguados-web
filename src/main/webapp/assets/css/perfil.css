@@ -1,0 +1,91 @@
+.profile-header-card {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding: 40px;
+    margin-bottom: 30px;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    background-color: var(--primary-purple);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 40px;
+    font-weight: 800;
+    border: 5px solid #DDF4FF;
+}
+
+.profile-main-info h1 {
+    margin: 0;
+    color: var(--text-main);
+    font-size: 32px;
+}
+
+.profile-main-info p {
+    color: #afafaf;
+    margin: 5px 0 15px 0;
+    font-weight: 700;
+}
+
+.badge-level {
+    background: #FFC800;
+    color: white;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 14px;
+    border-bottom: 3px solid #E5A100;
+}
+
+.profile-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.stat-box {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 20px;
+}
+
+.stat-emoji {
+    font-size: 30px;
+}
+
+.stat-data {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-data strong {
+    font-size: 20px;
+    color: var(--text-main);
+}
+
+.stat-data small {
+    color: #afafaf;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.btn-logout {
+    display: inline-block;
+    padding: 12px 25px;
+    color: #EA2B2B;
+    text-decoration: none;
+    font-weight: 800;
+    border: 2px solid #EA2B2B;
+    border-radius: 15px;
+    transition: all 0.2s;
+}
+
+.btn-logout:hover {
+    background: #FFDFE0;
+}

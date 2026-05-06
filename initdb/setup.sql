@@ -72,6 +72,12 @@ CREATE TABLE IF NOT EXISTS modulos (
 INSERT IGNORE INTO usuario (nome, email, senha) VALUES
 ('admin', 'admin@admin.com', 'admin123');
 
+INSERT IGNORE INTO usuario (nome, email, senha) VALUES
+('ian', 'ian@admin.com', 'admin123');
+
+INSERT IGNORE INTO usuario (nome, email, senha) VALUES
+('vitao', 'vitao@admin.com', 'admin123');
+
 -- Desafio 1: Traducao
 INSERT IGNORE INTO desafio (id, titulo, enunciado, xp_recompensa, dificuldade, tipo, resposta_correta) VALUES
 (1, 'Saudacoes', 'Traduza "Good Morning" para portugues.', 15, 'Facil', 'TRADUCAO', 'Bom dia');
