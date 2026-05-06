@@ -45,9 +45,17 @@
             </a>
         </nav>
 
-        <div class="user-info-footer" style="border-top: 1px solid #eee; padding: 20px;">
-            <strong>${usuarioLogado.nome}</strong><br>
-            <small class="text-gray">Level ${usuarioLogado.nivel}</small>
+        <div class="user-info-footer">
+            <img
+                src="${pageContext.request.contextPath}/assets/img/avatar.png"
+                alt="Foto do usuário"
+                class="user-avatar"
+            />
+
+            <div class="user-meta">
+                <strong>${usuarioLogado.nome}</strong>
+                <small class="text-gray">Level ${usuarioLogado.nivel}</small>
+            </div>
         </div>
     </aside>
 
