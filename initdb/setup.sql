@@ -1,6 +1,5 @@
 -- Script SQL (roda ao realizar build no docker)
 CREATE DATABASE IF NOT EXISTS linguados;
-USE linguados;
 
 -- 1. Tabela de Usuários
 CREATE TABLE IF NOT EXISTS usuario (
