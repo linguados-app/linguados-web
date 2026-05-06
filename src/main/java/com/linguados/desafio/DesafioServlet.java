@@ -81,8 +81,6 @@ public class DesafioServlet extends HttpServlet {
 
         if (desafio != null && desafio.verificarResposta(respostaUser)) {
 
-            // Lógica de Ganho de XP e Registro
-            // Só salva e dá XP se o usuário ainda NÃO concluiu este desafio
             if (!progressoDAO.jaConcluiu(usuario.getId(), desafioId)) {
 
                 boolean sucesso = progressoDAO.salvarProgresso(usuario.getId(), desafioId, desafio.getXpRecompensa());

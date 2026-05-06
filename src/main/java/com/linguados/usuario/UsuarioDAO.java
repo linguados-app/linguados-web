@@ -6,6 +6,8 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.ArrayList;
 
 public class UsuarioDAO {
 
@@ -101,5 +103,27 @@ public class UsuarioDAO {
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar streak: " + e.getMessage());
         }
+    }
+
+    public List<Usuario> buscarRanking() {
+        List<Usuario> ranking = new ArrayList<>();
+        // Busca os top 10 ordenados por XP de forma decrescente
+        String sql = "SELECT nome, xp, nivel FROM usuario ORDER BY xp DESC LIMIT 10";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+                Usuario u = new Usuario();
+                u.setNome(rs.getString("nome"));
+                u.setXp(rs.getInt("xp"));
+                u.setNivel(rs.getInt("nivel"));
+                ranking.add(u);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return ranking;
     }
 }

@@ -26,9 +26,22 @@
             <a href="${pageContext.request.contextPath}/dashboard" class="nav-link active">
                 📊 <span class="nav-text">Dashboard</span>
             </a>
-            <!-- LINK CORRIGIDO PARA DESAFIOS -->
+
             <a href="${pageContext.request.contextPath}/desafios" class="nav-link">
                 📖 <span class="nav-text">Lessons</span>
+            </a>
+
+            <!-- NOVOS BOTÕES ADICIONADOS ABAIXO -->
+            <a href="${pageContext.request.contextPath}/ranking" class="nav-link">
+                🏆 <span class="nav-text">Ranking</span>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/chat" class="nav-link">
+                💬 <span class="nav-text">Chat</span>
+            </a>
+
+            <a href="${pageContext.request.contextPath}/perfil" class="nav-link">
+                👤 <span class="nav-text">Perfil</span>
             </a>
         </nav>
 
