@@ -64,6 +64,14 @@ CREATE TABLE IF NOT EXISTS modulos (
     ativo BOOLEAN DEFAULT TRUE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS chat_mensagens (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  conteudo TEXT NOT NULL,
+  data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (usuario_id) REFERENCES usuario(id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ==========================================================
 -- DADOS DE TESTE (POVOAMENTO)
 -- ==========================================================
