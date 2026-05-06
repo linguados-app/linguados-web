@@ -4,11 +4,7 @@ import com.linguados.usuario.Usuario;
 import com.linguados.usuario.UsuarioService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
+import jakarta.servlet.http.*;
 import java.io.IOException;
 
 @WebServlet("/dashboard")
@@ -18,20 +14,21 @@ public class DashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1. Recupera a sessão e o usuario
         HttpSession session = request.getSession();
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
 
-        UsuarioService service = new UsuarioService();
-        usuario = service.atualizarStreak(usuario);
-
-        // 2. Se não estiver logado, volta para o login
+        // 1. Segurança: Verifica se está logado antes de qualquer coisa
         if (usuario == null) {
-            response.sendRedirect("login");
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
-        // 4. EXIBIÇÃO: Encaminha para o JSP que criamos
+        // 2. Atualiza dados de streak/XP
+        UsuarioService service = new UsuarioService();
+        usuario = service.atualizarStreak(usuario);
+        session.setAttribute("usuarioLogado", usuario);
+
+        // 3. Renderiza a Dashboard
         request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
     }
 }

@@ -1,34 +1,157 @@
+/* Configurações Gerais */
+:root {
+    --primary-purple: #8A2BE2;
+    --dark-purple: #6A1B9A;
+    --success-green: #58CC02;
+    --success-dark: #46A302;
+    --xp-yellow: #FFC800;
+    --xp-dark: #E5A100;
+    --text-main: #3C3C3C;
+    --text-gray: #AFAFAF;
+    --border-light: #E5E5E5;
+}
+
+.bg-light {
+    background-color: #FFFFFF;
+    min-height: 100vh;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* Header da Lista */
+.header-lista {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 40px 10px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.btn-back {
+    text-decoration: none;
+    color: var(--text-gray);
+    font-weight: 800;
+    font-size: 14px;
+    transition: 0.2s;
+}
+
+.btn-back:hover {
+    color: var(--primary-purple);
+}
+
+/* Grid de Desafios */
 .grid-desafios {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
+    gap: 30px;
     padding: 40px;
     max-width: 1200px;
     margin: 0 auto;
 }
+
+/* Card de Desafio */
 .card-desafio {
     background: white;
-    border: 2px solid #e5e5e5;
+    border: 2px solid var(--border-light);
+    border-bottom: 6px solid var(--border-light); /* Efeito 3D */
     border-radius: 20px;
-    padding: 24px;
+    padding: 30px 24px;
     text-align: center;
-    transition: transform 0.2s;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 220px;
 }
+
 .card-desafio:hover {
-    transform: translateY(-5px);
+    transform: translateY(-2px);
     border-color: var(--primary-purple);
+    border-bottom-color: var(--dark-purple);
 }
+
+.card-desafio:active {
+    transform: translateY(2px);
+    border-bottom-width: 2px; /* Simula o clique */
+}
+
+/* Badges e Textos */
+.badge-tipo {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.card-desafio h3 {
+    color: var(--text-main);
+    font-size: 22px;
+    font-weight: 800;
+    margin: 10px 0;
+}
+
 .xp-badge {
-    background-color: #FFC800; /* Amarelo "Gema de Ovo" (bem saturado) */
-    color: #000000;            /* Preto para contraste total */
-    padding: 6px 14px;
+    background-color: var(--xp-yellow);
+    color: #000000;
+    padding: 6px 16px;
     border-radius: 12px;
     font-weight: 800;
     font-size: 13px;
     text-transform: uppercase;
-
-    /* Borda inferior escura para tirar o efeito "faded" */
-    border-bottom: 3px solid #E5A100;
+    border-bottom: 3px solid var(--xp-dark);
     display: inline-block;
-    text-shadow: 0px 1px 0px rgba(0,0,0,0.1); /* Dá uma leve nitidez ao texto */
+    margin-bottom: 20px;
+}
+
+/* Botão de Ação */
+.btn-play {
+    background-color: var(--success-green);
+    color: white;
+    text-decoration: none;
+    font-weight: 800;
+    padding: 12px;
+    border-radius: 15px;
+    border-bottom: 4px solid var(--success-dark);
+    transition: filter 0.2s;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+.btn-play:hover {
+    filter: brightness(1.1);
+}
+
+/* Feedback de Acerto (Alert/Toast) */
+.alert-success {
+    background-color: #D7FFB8;
+    border: 2px solid #58CC02;
+    color: #46A302;
+    padding: 15px 25px;
+    border-radius: 15px;
+    max-width: 1120px;
+    margin: 20px auto;
+    font-weight: 800;
+    text-align: center;
+    animation: slideDown 0.5s ease-out;
+}
+
+@keyframes slideDown {
+    from { transform: translateY(-20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Empty State */
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px;
+    color: var(--text-gray);
+}
+
+.empty-state p {
+    font-size: 20px;
+    font-weight: 700;
 }

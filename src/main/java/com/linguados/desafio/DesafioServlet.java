@@ -1,14 +1,11 @@
 package com.linguados.desafio;
 
 import com.linguados.usuario.Usuario;
+import com.linguados.usuario.UsuarioService;
 import com.linguados.progresso.ProgressoDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
+import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -17,33 +14,47 @@ public class DesafioServlet extends HttpServlet {
 
     private DesafioDAO desafioDAO = new DesafioDAO();
     private ProgressoDAO progressoDAO = new ProgressoDAO();
+    private UsuarioService usuarioService = new UsuarioService();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1. VERIFICAÇÃO DE SESSÃO: Se não estiver logado, manda pro Login
         HttpSession session = request.getSession();
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
 
         if (usuarioLogado == null) {
-            response.sendRedirect("login");
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
         String idParam = request.getParameter("id");
+
         if (idParam == null) {
             List<Desafio> lista = desafioDAO.listarTodos();
             request.setAttribute("listaDesafios", lista);
             request.getRequestDispatcher("/WEB-INF/views/desafio/lista.jsp").forward(request, response);
         } else {
-            int id = Integer.parseInt(idParam);
-            Desafio desafio = desafioDAO.buscarPorId(id);
-            if (desafio != null) {
-                request.setAttribute("desafio", desafio);
-                request.getRequestDispatcher("/WEB-INF/views/desafio/resolver.jsp").forward(request, response);
-            } else {
-                response.sendRedirect("desafios");
+            try {
+                int id = Integer.parseInt(idParam);
+                Desafio desafio = desafioDAO.buscarPorId(id);
+
+                if (desafio != null) {
+                    request.setAttribute("desafio", desafio);
+                    String view;
+                    if (desafio instanceof DesafioLacuna) {
+                        view = "/WEB-INF/views/desafio/lacuna.jsp";
+                    } else if (desafio instanceof DesafioMultiplaEscolha) {
+                        view = "/WEB-INF/views/desafio/multipla_escolha.jsp";
+                    } else {
+                        view = "/WEB-INF/views/desafio/traducao.jsp";
+                    }
+                    request.getRequestDispatcher(view).forward(request, response);
+                } else {
+                    response.sendRedirect(request.getContextPath() + "/desafios");
+                }
+            } catch (NumberFormatException e) {
+                response.sendRedirect(request.getContextPath() + "/desafios");
             }
         }
     }
@@ -52,12 +63,14 @@ public class DesafioServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1. RECUPERA USUÁRIO DA SESSÃO
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         HttpSession session = request.getSession();
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
 
         if (usuario == null) {
-            response.sendRedirect("login");
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
@@ -66,25 +79,25 @@ public class DesafioServlet extends HttpServlet {
 
         Desafio desafio = desafioDAO.buscarPorId(desafioId);
 
-        if (desafio != null && desafio.getRespostaCorreta().equalsIgnoreCase(respostaUser.trim())) {
+        if (desafio != null && desafio.verificarResposta(respostaUser)) {
 
-            // 2. VERIFICA SE JÁ COMPLETOU (Evita duplicar XP)
-            if (!progressoDAO.jaConcluiu(usuario.getId(), desafio.getId())) {
+            // Lógica de Ganho de XP e Registro
+            // Só salva e dá XP se o usuário ainda NÃO concluiu este desafio
+            if (!progressoDAO.jaConcluiu(usuario.getId(), desafioId)) {
 
-                boolean salvou = progressoDAO.salvarProgresso(usuario.getId(), desafio.getId(), desafio.getXp());
+                boolean sucesso = progressoDAO.salvarProgresso(usuario.getId(), desafioId, desafio.getXpRecompensa());
 
-                if (salvou) {
-                    // 3. ATUALIZA XP NO CABEÇALHO (Objeto na Sessão)
-                    // Como o JSP lê o objeto 'usuarioLogado', ao mudar o XP aqui,
-                    // a mudança aparece em todas as páginas que usam o cabeçalho.
-                    int novoXp = usuario.getXp() + desafio.getXp();
-                    usuario.setXp(novoXp);
+                if (sucesso) {
+                    // Atualiza o objeto da sessão com o novo XP e verifica Level Up
+                    usuarioService.processarGanhoXp(usuario, desafio.getXpRecompensa());
                     session.setAttribute("usuarioLogado", usuario);
                 }
             }
-            response.sendRedirect("desafios?feedback=acertou");
+
+            response.sendRedirect(request.getContextPath() + "/desafios?feedback=acertou");
         } else {
-            response.sendRedirect("desafios?id=" + desafioId + "&feedback=errou");
+            // Feedback de erro: volta para o mesmo desafio
+            response.sendRedirect(request.getContextPath() + "/desafios?id=" + desafioId + "&feedback=errou");
         }
     }
 }

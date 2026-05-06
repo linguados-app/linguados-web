@@ -19,8 +19,13 @@ public class DatabaseConfig {
     private static final String USER = "root";
     private static final String PASSWORD = "root";
 
+    /**
+     * Adicionamos useUnicode=true e characterEncoding=UTF-8
+     * para garantir que o 'ç' e acentos funcionem corretamente.
+     */
     private static final String URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DB_NAME
-            + "?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
+            + "?useUnicode=true&characterEncoding=UTF-8"
+            + "&useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
 
     public static Connection getConnection() throws SQLException {
         try {

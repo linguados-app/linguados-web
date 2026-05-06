@@ -1,63 +1,74 @@
 package com.linguados.desafio;
 
 import com.linguados.config.DatabaseConfig;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class DesafioDAO {
 
-    // Busca todos os desafios cadastrados no banco de dados
-    // @return Uma lista de objetos Desafio
-    public List<Desafio> listarTodos() {
-        List<Desafio> desafios = new ArrayList<>();
-        String sql = "SELECT * FROM desafio";
-
-        try (Connection conn = DatabaseConfig.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql);
-             ResultSet rs = stmt.executeQuery()) {
-
-            while (rs.next()) {
-                Desafio desafio = new Desafio();
-                desafio.setId(rs.getInt("id"));
-                desafio.setTitulo(rs.getString("titulo"));
-                desafio.setDescricao(rs.getString("descricao"));
-                desafio.setXp(rs.getInt("pontos_xp"));
-                desafio.setDificuldade(rs.getString("dificuldade"));
-
-                desafios.add(desafio);
-            }
-        } catch (SQLException e) {
-            System.err.println("Erro ao listar desafios: " + e.getMessage());
-        }
-        return desafios;
-    }
-
-    // Busca um desafio específico pelo ID
     public Desafio buscarPorId(int id) {
-        String sql = "SELECT * FROM desafio WHERE id = ?";
-        try (Connection conn = DatabaseConfig.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        // Query que busca em todas as tabelas relacionadas
+        String sql = "SELECT d.*, l.texto_antes, l.texto_depois, l.palavra_omitida, m.opcoes " +
+                "FROM desafio d " +
+                "LEFT JOIN desafio_lacuna l ON d.id = l.id_desafio " +
+                "LEFT JOIN desafio_multipla_escolha m ON d.id = m.id_desafio " +
+                "WHERE d.id = ?";
 
-            stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery();
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
-                Desafio d = new Desafio();
+                String tipo = rs.getString("tipo");
+                Desafio d;
+
+                // Instanciação baseada no tipo (Polimorfismo)
+                if ("LACUNA".equalsIgnoreCase(tipo)) {
+                    DesafioLacuna dl = new DesafioLacuna();
+                    dl.setTextoAntes(rs.getString("texto_antes"));
+                    dl.setTextoDepois(rs.getString("texto_depois"));
+                    dl.setPalavraOmitida(rs.getString("palavra_omitida"));
+                    d = dl;
+                } else if ("MULTIPLA_ESCOLHA".equalsIgnoreCase(tipo)) {
+                    DesafioMultiplaEscolha dm = new DesafioMultiplaEscolha();
+                    dm.setOpcoesSemicolon(rs.getString("opcoes"));
+                    d = dm;
+                } else {
+                    d = new DesafioTraducao();
+                }
+
+                // Preenchimento dos dados comuns da classe pai
                 d.setId(rs.getInt("id"));
                 d.setTitulo(rs.getString("titulo"));
-                d.setDescricao(rs.getString("descricao"));
-                d.setRespostaCorreta(rs.getString("resposta_correta")); // Nome da coluna no MySQL
-                d.setXp(rs.getInt("xp"));
-                d.setNivel(rs.getString("nivel"));
+                d.setEnunciado(rs.getString("enunciado"));
+                d.setXpRecompensa(rs.getInt("xp_recompensa"));
+                d.setRespostaCorreta(rs.getString("resposta_correta"));
+                d.setTipo(tipo);
                 return d;
             }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        } catch (SQLException e) { e.printStackTrace(); }
         return null;
+    }
+
+    public List<Desafio> listarTodos() {
+        List<Desafio> lista = new ArrayList<>();
+        String sql = "SELECT id, titulo, tipo, xp_recompensa FROM desafio";
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
+                // Para a lista, usamos um objeto genérico básico
+                Desafio d = new DesafioTraducao();
+                d.setId(rs.getInt("id"));
+                d.setTitulo(rs.getString("titulo"));
+                d.setTipo(rs.getString("tipo"));
+                d.setXpRecompensa(rs.getInt("xp_recompensa"));
+                lista.add(d);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return lista;
     }
 }

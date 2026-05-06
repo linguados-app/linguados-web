@@ -1,31 +1,50 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Desafios | Linguados</title>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
+    <meta charset="UTF-8">
+    <title>Lições Disponíveis | Linguados</title>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/desafio.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/lista.css">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 </head>
-<body style="background-color: #f7f7f7;">
+<body class="bg-light">
 
-    <h1 style="text-align: center; font-family: 'Nunito'; margin-top: 50px;">Escolha seu próximo desafio!</h1>
+    <div class="container py-5">
+        <header class="header-lista">
+            <a href="${pageContext.request.contextPath}/dashboard" class="btn-back">← Voltar</a>
+            <h1 class="text-purple">Suas Lições</h1>
+        </header>
 
-    <div class="grid-desafios">
-        <%-- O c:forEach é o "for" do Java dentro do HTML --%>
-        <c:forEach var="desafio" items="${listaDesafios}">
-            <div class="card-desafio">
-                <span class="xp-badge">${desafio.xp} XP</span>
-                <h3 style="font-family: 'Nunito';">${desafio.titulo}</h3>
-                <p style="color: #777;">Nível: ${desafio.nivel}</p>
+        <c:if test="${param.feedback == 'acertou'}">
+            <div class="alert alert-success">✨ Mandou bem! Você ganhou XP!</div>
+        </c:if>
 
-                <a href="resolver?id=${desafio.id}" class="btn-main"
-                   style="display: block; font-size: 14px; padding: 10px;">
-                   Começar
-                </a>
-            </div>
-        </c:forEach>
+        <div class="grid-desafios">
+            <c:choose>
+                <c:when test="${not empty listaDesafios}">
+                    <c:forEach var="desafio" items="${listaDesafios}">
+                        <div class="card-desafio">
+                            <div class="card-info">
+                                <span class="badge-tipo">${desafio.tipo}</span>
+                                <h3>${desafio.titulo}</h3>
+                                <p class="xp-val">✨ ${desafio.xpRecompensa} XP</p>
+                            </div>
+                            <a href="${pageContext.request.contextPath}/desafios?id=${desafio.id}" class="btn-play">
+                                COMEÇAR
+                            </a>
+                        </div>
+                    </c:forEach>
+                </c:when>
+                <c:otherwise>
+                    <div class="empty-state">
+                        <p>Nenhum desafio encontrado no banco de dados. 🦆</p>
+                        <small>Verifique se o seu setup.sql rodou corretamente.</small>
+                    </div>
+                </c:otherwise>
+            </c:choose>
+        </div>
     </div>
 
 </body>
