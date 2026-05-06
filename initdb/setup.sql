@@ -21,38 +21,9 @@ CREATE TABLE IF NOT EXISTS desafio (
     descricao TEXT,
     pontos_xp INT NOT NULL,
     dificuldade ENUM('Facil', 'Medio', 'Dificil') DEFAULT 'Facil',
-    tipo ENUM('Traducao', 'Lacuna', 'Multipla') NOT NULL
-    );
-
--- 2. Tabela para Desafio de Tradução
-CREATE TABLE desafio_traducao (
-    id_desafio INT PRIMARY KEY,
-    resposta_correta VARCHAR(255) NOT NULL,
-    FOREIGN KEY (id_desafio) REFERENCES desafio(id) ON DELETE CASCADE
-    );
-
--- 3. Tabela para Desafio de Lacuna (Fill in the blanks)
-CREATE TABLE desafio_lacuna (
-    id_desafio INT PRIMARY KEY,
-    texto_antes VARCHAR(255),  -- Parte da frase antes da lacuna
-    texto_depois VARCHAR(255), -- Parte da frase depois da lacuna
-    palavra_omitida VARCHAR(50) NOT NULL, -- A resposta correta
-    FOREIGN KEY (id_desafio) REFERENCES desafio(id) ON DELETE CASCADE
-);
-
--- 4. Tabela para Desafio de Múltipla Escolha
-CREATE TABLE desafio_multipla_escolha (
-    id_desafio INT PRIMARY KEY,
-    FOREIGN KEY (id_desafio) REFERENCES desafio(id) ON DELETE CASCADE
-);
-
--- 5. Tabela de Alternativas (Relacionada à Múltipla Escolha)
-CREATE TABLE alternativa (
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    id_desafio INT NOT NULL,
-    texto VARCHAR(255) NOT NULL,
-    eh_correta BOOLEAN DEFAULT FALSE, -- Define se esta é a resposta certa
-    FOREIGN KEY (id_desafio) REFERENCES desafio_multipla_escolha(id_desafio) ON DELETE CASCADE
+    tipo ENUM('TRADUCAO', 'LACUNA', 'MULTIPLA_ESCOLHA') NOT NULL, -- Valores atualizados e em maiúsculas
+    resposta_correta VARCHAR(255) NULL, -- Resposta para DesafioTraducao e DesafioLacuna
+    opcoes_multipla_escolha VARCHAR(1024) NULL -- Opções para DesafioMultiplaEscolha, separadas por ';'
     );
 
 -- 3. Tabela de Progresso (Relaciona Usuário com Desafio)
@@ -84,10 +55,10 @@ CREATE TABLE IF NOT EXISTS conquista (
 INSERT IGNORE INTO usuario (nome, email, senha) VALUES
 ('admin', 'admin@admin.com', 'admin123');
 
-INSERT IGNORE INTO desafio (titulo, descricao, pontos_xp, dificuldade, tipo) VALUES
-('Ola Mundo', 'Imprima sua primeira mensagem no console Java.', 10, 'Facil', 'Traducao'),
-('Variaveis e Tipos', 'Declare variaveis de diferentes tipos primitivos.', 20, 'Facil', 'Lacuna'),
-('Estruturas de Repeticao', 'Crie um loop que conte ate 100.', 50, 'Medio', 'Multipla');
+INSERT IGNORE INTO desafio (titulo, descricao, pontos_xp, dificuldade, tipo, resposta_correta, opcoes_multipla_escolha) VALUES
+('Hello World', 'Traduza "Hello World" para português.', 10, 'Facil', 'TRADUCAO', 'Olá Mundo', NULL),
+('Variáveis em Java', 'Preencha a lacuna: "Para declarar uma variável de texto em Java, usamos o tipo _____.".', 20, 'Facil', 'LACUNA', 'String', NULL),
+('Estruturas de Repetição', 'Qual estrutura de repetição executa o bloco de código pelo menos uma vez, mesmo que a condição seja falsa?', 50, 'Medio', 'MULTIPLA_ESCOLHA', 'do-while', 'for;while;do-while;foreach');
 
 CREATE TABLE IF NOT EXISTS modulos (
     id INT AUTO_INCREMENT PRIMARY KEY,
