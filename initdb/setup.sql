@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS usuario (
     xp INT DEFAULT 0,
     nivel INT DEFAULT 1,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    streak INT DEFAULT 0
+    streak INT DEFAULT 0,
+    ultimo_acesso DATE NULL -- Adiciona a coluna ultimo_acesso
     );
 
 -- 2. Tabela de Desafios

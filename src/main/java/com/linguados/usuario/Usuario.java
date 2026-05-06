@@ -22,13 +22,14 @@ public class Usuario implements Serializable {
     public Usuario() {}
 
     // Construtor para facilitar a criação via DAO
-    public Usuario(int id, String nome, String email, int xp, int nivel, int streak) {
+    public Usuario(int id, String nome, String email, int xp, int nivel, int streak, LocalDate ultimoAcesso) {
         this.id = id;
         this.nome = nome;
         this.email = email;
         this.xp = xp;
         this.nivel = nivel;
         this.streak = streak;
+        this.ultimoAcesso = ultimoAcesso; // Adiciona ultimoAcesso ao construtor
     }
 
     // Getters e Setters
