@@ -67,29 +67,3 @@ CREATE TABLE IF NOT EXISTS modulos (
     ordem INT DEFAULT 0,
     ativo BOOLEAN DEFAULT TRUE
 );
-
-CREATE TABLE IF NOT EXISTS questoes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    modulo_id INT NOT NULL,
-    enunciado TEXT NOT NULL,
-    tipo VARCHAR(30) NOT NULL,
-    ordem INT DEFAULT 0,
-    xp INT DEFAULT 10,
-    ativo BOOLEAN DEFAULT TRUE,
-    FOREIGN KEY (modulo_id) REFERENCES modulos(id)
-);
-
-CREATE TABLE IF NOT EXISTS alternativas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    questao_id INT NOT NULL,
-    texto VARCHAR(255) NOT NULL,
-    correta BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (questao_id) REFERENCES questoes(id)
-);
-
-CREATE TABLE IF NOT EXISTS respostas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    questao_id INT NOT NULL,
-    resposta VARCHAR(255) NOT NULL,
-    FOREIGN KEY (questao_id) REFERENCES questoes(id)
-);
