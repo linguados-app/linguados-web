@@ -89,7 +89,7 @@ INSERT IGNORE INTO desafio (titulo, descricao, pontos_xp, dificuldade, tipo) VAL
 ('Variaveis e Tipos', 'Declare variaveis de diferentes tipos primitivos.', 20, 'Facil', 'Lacuna'),
 ('Estruturas de Repeticao', 'Crie um loop que conte ate 100.', 50, 'Medio', 'Multipla');
 
-CREATE TABLE modulos (
+CREATE TABLE IF NOT EXISTS modulos (
     id INT AUTO_INCREMENT PRIMARY KEY,
     titulo VARCHAR(120) NOT NULL,
     descricao TEXT,
@@ -97,7 +97,7 @@ CREATE TABLE modulos (
     ativo BOOLEAN DEFAULT TRUE
 );
 
-CREATE TABLE questoes (
+CREATE TABLE IF NOT EXISTS questoes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     modulo_id INT NOT NULL,
     enunciado TEXT NOT NULL,
@@ -108,7 +108,7 @@ CREATE TABLE questoes (
     FOREIGN KEY (modulo_id) REFERENCES modulos(id)
 );
 
-CREATE TABLE alternativas (
+CREATE TABLE IF NOT EXISTS alternativas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     questao_id INT NOT NULL,
     texto VARCHAR(255) NOT NULL,
@@ -116,7 +116,7 @@ CREATE TABLE alternativas (
     FOREIGN KEY (questao_id) REFERENCES questoes(id)
 );
 
-CREATE TABLE respostas (
+CREATE TABLE IF NOT EXISTS respostas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     questao_id INT NOT NULL,
     resposta VARCHAR(255) NOT NULL,
