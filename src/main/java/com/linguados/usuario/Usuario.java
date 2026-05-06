@@ -29,7 +29,7 @@ public class Usuario implements Serializable {
         this.xp = xp;
         this.nivel = nivel;
         this.streak = streak;
-        this.ultimoAcesso = ultimoAcesso; // Adiciona ultimoAcesso ao construtor
+        this.ultimoAcesso = ultimoAcesso;
     }
 
     // Getters e Setters

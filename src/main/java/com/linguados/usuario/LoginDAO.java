@@ -1,18 +1,16 @@
 package com.linguados.usuario;
 
 import com.linguados.config.DatabaseConfig;
-import com.linguados.config.DatabaseConfig;
 import java.sql.Connection;
-import java.sql.Date; // Importa java.sql.Date para lidar com datas
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.LocalDate; // Importa LocalDate
+import java.time.LocalDate;
 
 public class LoginDAO {
 
     public Usuario autenticar(String email, String senha) {
-        // Adiciona ultimo_acesso na seleção
         String sql = "SELECT id, nome, email, xp, nivel, streak, ultimo_acesso FROM usuario WHERE email = ? AND senha = ?";
 
         try (Connection conn = DatabaseConfig.getConnection();
@@ -34,11 +32,10 @@ public class LoginDAO {
                             rs.getInt("xp"),
                             rs.getInt("nivel"),
                             rs.getInt("streak"),
-                            ultimoAcesso // Passa o ultimoAcesso para o construtor
+                            ultimoAcesso
                     );
                 }
             }
-            // Não fecha o ResultSet aqui, ele é fechado automaticamente pelo try-with-resources
         } catch (SQLException e) {
             System.err.println("Erro na autenticação: " + e.getMessage());
         }

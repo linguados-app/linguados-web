@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS usuario (
     nivel INT DEFAULT 1,
     data_criacao TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     streak INT DEFAULT 0,
-    ultimo_acesso DATE NULL -- Adiciona a coluna ultimo_acesso
+    ultimo_acesso DATE NULL
     );
 
 -- 2. Tabela de Desafios
