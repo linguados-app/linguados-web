@@ -11,6 +11,7 @@ public abstract class Desafio implements Serializable {
     private String nivel;
     private String dificuldade;
     private String tipo;
+    private int idModulo;
 
     public Desafio() {}
 
@@ -18,6 +19,13 @@ public abstract class Desafio implements Serializable {
     public abstract boolean verificarResposta(String respostaDoUsuario);
 
     // Getters e Setters
+    public int getIdModulo() {
+        return idModulo;
+    }
+
+    public void setIdModulo(int idModulo) {
+        this.idModulo = idModulo;
+    }
     public int getId() { return id; }
     public void setId(int id) { this.id = id; }
     public String getTitulo() { return titulo; }

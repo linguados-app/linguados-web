@@ -21,6 +21,11 @@
             <div class="alert alert-success">✨ Mandou bem! Você ganhou XP!</div>
         </c:if>
 
+    <a class="btn-add"
+       <a href="${pageContext.request.contextPath}/admin/desafio/form?idModulo=${modulo.id}">
+        + Novo Desafio
+    </a>
+    
         <div class="grid-desafios">
             <c:choose>
                 <c:when test="${not empty listaDesafios}">

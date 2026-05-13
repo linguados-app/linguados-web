@@ -31,9 +31,23 @@ public class DesafioServlet extends HttpServlet {
         String idParam = request.getParameter("id");
 
         if (idParam == null) {
-            List<Desafio> lista = desafioDAO.listarTodos();
+
+            String moduloParam = request.getParameter("modulo");
+
+            if (moduloParam == null) {
+                response.sendRedirect(request.getContextPath() + "/admin/modulos");
+                return;
+            }
+
+            int idModulo = Integer.parseInt(moduloParam);
+
+            List<Desafio> lista =
+                    desafioDAO.listarPorModulo(idModulo);
+
             request.setAttribute("listaDesafios", lista);
-            request.getRequestDispatcher("/WEB-INF/views/desafio/lista.jsp").forward(request, response);
+
+            request.getRequestDispatcher("/WEB-INF/views/desafio/lista.jsp")
+                    .forward(request, response);
         } else {
             try {
                 int id = Integer.parseInt(idParam);
