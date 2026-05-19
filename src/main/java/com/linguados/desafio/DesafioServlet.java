@@ -41,8 +41,7 @@ public class DesafioServlet extends HttpServlet {
 
             int idModulo = Integer.parseInt(moduloParam);
 
-            List<Desafio> lista =
-                    desafioDAO.listarPorModulo(idModulo);
+            List<Desafio> lista = desafioDAO.listarPorModulo(idModulo);
 
             request.setAttribute("listaDesafios", lista);
 
@@ -106,7 +105,10 @@ public class DesafioServlet extends HttpServlet {
                 }
             }
 
-            response.sendRedirect(request.getContextPath() + "/desafios?feedback=acertou");
+            String mensagem = "🎉 Incrível! Você concluiu o desafio '" + desafio.getTitulo() + "' e faturou +" + desafio.getXpRecompensa() + " XP!";
+            String mensagemCodificada = java.net.URLEncoder.encode(mensagem, java.nio.charset.StandardCharsets.UTF_8);
+
+            response.sendRedirect(request.getContextPath() + "/dashboard?mensagemConcluido=" + mensagemCodificada);
         } else {
             // Feedback de erro: volta para o mesmo desafio
             response.sendRedirect(request.getContextPath() + "/desafios?id=" + desafioId + "&feedback=errou");

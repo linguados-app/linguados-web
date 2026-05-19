@@ -6,12 +6,14 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar.classList.add('collapsed');
     }
 
-    btn.addEventListener('click', () => {
-        sidebar.classList.toggle('collapsed');
+    if (btn && sidebar) {
+        btn.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
 
-        localStorage.setItem(
-            'sidebar-collapsed',
-            sidebar.classList.contains('collapsed')
-        );
-    });
+            localStorage.setItem(
+                'sidebar-collapsed',
+                sidebar.classList.contains('collapsed')
+            );
+        });
+    }
 });
