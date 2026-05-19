@@ -34,6 +34,24 @@ public class UsuarioDAO {
         }
     }
 
+    public boolean atualizarNome(int usuarioId, String novoNome) {
+        String sql = "UPDATE usuario SET nome = ? WHERE id = ?";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, novoNome);
+            stmt.setInt(2, usuarioId);
+
+            int linhasAfetadas = stmt.executeUpdate();
+            return linhasAfetadas > 0; // Retorna true se a alteração foi persistida com sucesso
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar nome no banco de dados: " + e.getMessage());
+            return false;
+        }
+    }
+
     /**
      * Busca um usuário pelo e-mail (usado no Login).
      */
