@@ -122,6 +122,30 @@ CREATE TABLE IF NOT EXISTS chat_mensagens (
 
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Tabela de Conquistas Disponíveis
+CREATE TABLE IF NOT EXISTS conquista (
+                                         id INT AUTO_INCREMENT PRIMARY KEY,
+                                         codigo VARCHAR(50) NOT NULL UNIQUE, -- Ex: 'PRIMEIRA_MISSAO'
+    titulo VARCHAR(100) NOT NULL,
+    descricao TEXT NOT NULL,
+    badge_icone VARCHAR(50) NOT NULL,    -- Nome do arquivo de imagem ou emoji (Ex: '🚀')
+    xp_bonus INT DEFAULT 0
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Tabela Associativa de Conquistas do Usuário
+CREATE TABLE IF NOT EXISTS usuario_conquista (
+     usuario_id INT NOT NULL,
+     conquista_id INT NOT NULL,
+     data_desbloqueio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+     PRIMARY KEY (usuario_id, conquista_id),
+    FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE,
+    FOREIGN KEY (conquista_id) REFERENCES conquista(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Inserção da Conquista Inicial (Gatilho solicitado)
+INSERT IGNORE INTO conquista (id, codigo, titulo, descricao, badge_icone, xp_bonus)
+VALUES (1, 'PRIMEIRA_MISSAO', 'Primeiro Passo', 'Você completou o seu primeiro desafio no Linguados!', '🚀', 50);
+
 -- Atualizar os módulos com títulos mais adequados
 UPDATE modulos SET titulo = 'API Documentation' WHERE id = 1;
 UPDATE modulos SET titulo = 'Technical Reading' WHERE id = 2;
