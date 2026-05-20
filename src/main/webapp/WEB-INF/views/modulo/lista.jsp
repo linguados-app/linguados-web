@@ -48,7 +48,7 @@
                     <div style="margin-top: 20px;">
                         <a href="${pageContext.request.contextPath}/lessons?modulo=${modulo.id}"
                            style="display: block; text-align: center; background: #6c4cff; color: white; text-decoration: none; padding: 12px; border-radius: 14px; font-weight: 800; font-size: 14px; transition: background 0.2s; border-bottom: 4px solid #5436db;">
-                             Resolver Módulo
+                             Resolver Módulo 🚀
                         </a>
                     </div>
                 </div>

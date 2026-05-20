@@ -25,7 +25,7 @@
             <a href="${pageContext.request.contextPath}/dashboard" class="nav-link active">
                 📊 <span class="nav-text">Dashboard</span>
             </a>
-            <a href="${pageContext.request.contextPath}/desafios" class="nav-link">
+            <a href="${pageContext.request.contextPath}/lessons" class="nav-link">
                 📖 <span class="nav-text">Lessons</span>
             </a>
             <a href="${pageContext.request.contextPath}/ranking" class="nav-link">
@@ -37,6 +37,14 @@
             <a href="${pageContext.request.contextPath}/perfil" class="nav-link">
                 👤 <span class="nav-text">Perfil</span>
             </a>
+
+            <%-- RESTRIÇÃO: Botão na barra lateral visível apenas para Administradores --%>
+            <c:if test="${usuarioLogado.admin}">
+                <hr style="border: 0; border-top: 1px solid #E5E5E5; margin: 10px 20px;">
+                <a href="${pageContext.request.contextPath}/desafios" class="nav-link" style="color: #e03131;">
+                    ⚙️ <span class="nav-text">Gerenciar Desafios</span>
+                </a>
+            </c:if>
         </nav>
 
         <div class="user-info-footer">
@@ -107,7 +115,6 @@
         </section>
 
         <div class="lower-grid">
-            <!-- WEEKLY ACTIVITY - CORRIGIDO -->
             <section class="dashboard-card weekly-card">
                 <div class="section-header">
                     <div>
@@ -127,7 +134,6 @@
 
                         <c:set var="maxHeight" value="${maxAtividade > 0 ? maxAtividade : 5}"/>
 
-                        <!-- Segunda -->
                         <div class="bar-item">
                             <div class="bar-container">
                                 <div class="bar" style="height: ${(atividadeSemana[0] / maxHeight) * 180}px;">
@@ -137,7 +143,6 @@
                             <span class="bar-day">Mon</span>
                         </div>
 
-                        <!-- Terça -->
                         <div class="bar-item">
                             <div class="bar-container">
                                 <div class="bar" style="height: ${(atividadeSemana[1] / maxHeight) * 180}px;">
@@ -147,7 +152,6 @@
                             <span class="bar-day">Tue</span>
                         </div>
 
-                        <!-- Quarta -->
                         <div class="bar-item">
                             <div class="bar-container">
                                 <div class="bar" style="height: ${(atividadeSemana[2] / maxHeight) * 180}px;">
@@ -157,7 +161,6 @@
                             <span class="bar-day">Wed</span>
                         </div>
 
-                        <!-- Quinta -->
                         <div class="bar-item">
                             <div class="bar-container">
                                 <div class="bar" style="height: ${(atividadeSemana[3] / maxHeight) * 180}px;">
@@ -167,7 +170,6 @@
                             <span class="bar-day">Thu</span>
                         </div>
 
-                        <!-- Sexta -->
                         <div class="bar-item">
                             <div class="bar-container">
                                 <div class="bar" style="height: ${(atividadeSemana[4] / maxHeight) * 180}px;">
@@ -177,7 +179,6 @@
                             <span class="bar-day">Fri</span>
                         </div>
 
-                        <!-- Sábado -->
                         <div class="bar-item">
                             <div class="bar-container">
                                 <div class="bar" style="height: ${(atividadeSemana[5] / maxHeight) * 180}px;">
@@ -187,7 +188,6 @@
                             <span class="bar-day">Sat</span>
                         </div>
 
-                        <!-- Domingo -->
                         <div class="bar-item">
                             <div class="bar-container">
                                 <div class="bar" style="height: ${(atividadeSemana[6] / maxHeight) * 180}px;">
@@ -200,7 +200,6 @@
                 </div>
             </section>
 
-            <!-- IN PROGRESS -->
             <section class="dashboard-card trails-card">
                 <div class="section-header">
                     <div>
@@ -241,12 +240,6 @@
                 </div>
             </section>
         </div>
-
-        <footer class="dashboard-footer">
-            <a href="${pageContext.request.contextPath}/admin/modulos" class="admin-link">
-                ⚙️ Gerenciar módulos e conteúdos
-            </a>
-        </footer>
     </main>
 
     <script src="${pageContext.request.contextPath}/assets/js/dashboard.js"></script>

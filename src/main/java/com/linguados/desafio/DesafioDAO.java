@@ -1,6 +1,7 @@
 package com.linguados.desafio;
 
 import com.linguados.config.DatabaseConfig;
+import com.linguados.modulo.Modulo;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.List;
 public class DesafioDAO {
 
     public Desafio buscarPorId(int id) {
-        // Query que busca em todas as tabelas relacionadas
         String sql = "SELECT d.*, l.texto_antes, l.texto_depois, l.palavra_omitida, m.opcoes " +
                 "FROM desafio d " +
                 "LEFT JOIN desafio_lacuna l ON d.id = l.id_desafio " +
@@ -19,36 +19,34 @@ public class DesafioDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    String tipo = rs.getString("tipo");
+                    Desafio d;
 
-            if (rs.next()) {
-                String tipo = rs.getString("tipo");
-                Desafio d;
+                    if ("LACUNA".equalsIgnoreCase(tipo)) {
+                        DesafioLacuna dl = new DesafioLacuna();
+                        dl.setTextoAntes(rs.getString("texto_antes"));
+                        dl.setTextoDepois(rs.getString("texto_depois"));
+                        dl.setPalavraOmitida(rs.getString("palavra_omitida"));
+                        d = dl;
+                    } else if ("MULTIPLA_ESCOLHA".equalsIgnoreCase(tipo)) {
+                        DesafioMultiplaEscolha dm = new DesafioMultiplaEscolha();
+                        dm.setOpcoesSemicolon(rs.getString("opcoes"));
+                        d = dm;
+                    } else {
+                        d = new DesafioTraducao();
+                    }
 
-                // Instanciação baseada no tipo (Polimorfismo)
-                if ("LACUNA".equalsIgnoreCase(tipo)) {
-                    DesafioLacuna dl = new DesafioLacuna();
-                    dl.setTextoAntes(rs.getString("texto_antes"));
-                    dl.setTextoDepois(rs.getString("texto_depois"));
-                    dl.setPalavraOmitida(rs.getString("palavra_omitida"));
-                    d = dl;
-                } else if ("MULTIPLA_ESCOLHA".equalsIgnoreCase(tipo)) {
-                    DesafioMultiplaEscolha dm = new DesafioMultiplaEscolha();
-                    dm.setOpcoesSemicolon(rs.getString("opcoes"));
-                    d = dm;
-                } else {
-                    d = new DesafioTraducao();
+                    d.setId(rs.getInt("id"));
+                    d.setTitulo(rs.getString("titulo"));
+                    d.setEnunciado(rs.getString("enunciado"));
+                    d.setXpRecompensa(rs.getInt("xp_recompensa"));
+                    d.setRespostaCorreta(rs.getString("resposta_correta"));
+                    d.setTipo(tipo);
+                    d.setIdModulo(rs.getInt("id_modulo"));
+                    return d;
                 }
-
-                // Preenchimento dos dados comuns da classe pai
-                d.setId(rs.getInt("id"));
-                d.setTitulo(rs.getString("titulo"));
-                d.setEnunciado(rs.getString("enunciado"));
-                d.setXpRecompensa(rs.getInt("xp_recompensa"));
-                d.setRespostaCorreta(rs.getString("resposta_correta"));
-                d.setTipo(tipo);
-                d.setIdModulo(rs.getInt("id_modulo"));
-                return d;
             }
         } catch (SQLException e) { e.printStackTrace(); }
         return null;
@@ -61,7 +59,6 @@ public class DesafioDAO {
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                // Para a lista, usamos um objeto genérico básico
                 Desafio d = new DesafioTraducao();
                 d.setId(rs.getInt("id"));
                 d.setTitulo(rs.getString("titulo"));
@@ -73,67 +70,64 @@ public class DesafioDAO {
         } catch (SQLException e) { e.printStackTrace(); }
         return lista;
     }
-    public List<Desafio> listarPorModulo(int idModulo) {
 
+    public List<Desafio> listarPorModulo(int idModulo) {
         List<Desafio> lista = new ArrayList<>();
 
-        String sql = """
-        SELECT *
-        FROM desafio
-        WHERE id_modulo = ?
-        ORDER BY id
-    """;
+        String sql = "SELECT d.*, l.texto_antes, l.texto_depois, l.palavra_omitida, m.opcoes " +
+                "FROM desafio d " +
+                "LEFT JOIN desafio_lacuna l ON d.id = l.id_desafio " +
+                "LEFT JOIN desafio_multipla_escolha m ON d.id = m.id_desafio " +
+                "WHERE d.id_modulo = ? " +
+                "ORDER BY d.id ASC";
 
-        try (
-                Connection conn = DatabaseConfig.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)
-        ) {
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, idModulo);
 
-            ResultSet rs = ps.executeQuery();
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    String tipo = rs.getString("tipo");
+                    Desafio d;
 
-            while (rs.next()) {
+                    if ("LACUNA".equalsIgnoreCase(tipo)) {
+                        DesafioLacuna dl = new DesafioLacuna();
+                        dl.setTextoAntes(rs.getString("texto_antes"));
+                        dl.setTextoDepois(rs.getString("texto_depois"));
+                        dl.setPalavraOmitida(rs.getString("palavra_omitida"));
+                        d = dl;
+                    } else if ("MULTIPLA_ESCOLHA".equalsIgnoreCase(tipo)) {
+                        DesafioMultiplaEscolha dm = new DesafioMultiplaEscolha();
+                        dm.setOpcoesSemicolon(rs.getString("opcoes"));
+                        d = dm;
+                    } else {
+                        d = new DesafioTraducao();
+                    }
 
-                Desafio d = new DesafioTraducao();
+                    // Preenche as propriedades comuns (CORRIGIDO: adicionado setEnunciado)
+                    d.setId(rs.getInt("id"));
+                    d.setTitulo(rs.getString("titulo"));
+                    d.setEnunciado(rs.getString("enunciado")); // <--- A LINHA QUE SALVA O PATO!
+                    d.setXpRecompensa(rs.getInt("xp_recompensa"));
+                    d.setRespostaCorreta(rs.getString("resposta_correta"));
+                    d.setTipo(tipo);
+                    d.setIdModulo(rs.getInt("id_modulo"));
 
-                d.setId(rs.getInt("id"));
-                d.setTitulo(rs.getString("titulo"));
-                d.setTipo(rs.getString("tipo"));
-                d.setXpRecompensa(rs.getInt("xp_recompensa"));
-                d.setIdModulo(rs.getInt("id_modulo"));
-
-                lista.add(d);
+                    lista.add(d);
+                }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return lista;
     }
 
     public void salvar(Desafio desafio) {
+        String sql = "INSERT INTO desafio (titulo, enunciado, xp_recompensa, dificuldade, tipo, resposta_correta, id_modulo) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        String sql = """
-        INSERT INTO desafio
-        (
-            titulo,
-            enunciado,
-            xp_recompensa,
-            dificuldade,
-            tipo,
-            resposta_correta,
-            id_modulo
-        )
-        VALUES (?, ?, ?, ?, ?, ?, ?)
-    """;
-
-        try (
-                Connection conn = DatabaseConfig.getConnection();
-                PreparedStatement ps =
-                        conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)
-        ) {
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, desafio.getTitulo());
             ps.setString(2, desafio.getEnunciado());
@@ -144,81 +138,59 @@ public class DesafioDAO {
             ps.setInt(7, desafio.getIdModulo());
 
             ps.executeUpdate();
-
-            ResultSet rs = ps.getGeneratedKeys();
-
-            if (rs.next()) {
-
-                int idDesafio = rs.getInt(1);
-
-                // LACUNA
-                if (desafio instanceof DesafioLacuna dl) {
-
-                    salvarLacuna(dl, idDesafio, conn);
-
-                }
-
-                // MULTIPLA ESCOLHA
-                if (desafio instanceof DesafioMultiplaEscolha dm) {
-
-                    salvarMultiplaEscolha(dm, idDesafio, conn);
-
+            try (ResultSet rs = ps.getGeneratedKeys()) {
+                if (rs.next()) {
+                    int idDesafio = rs.getInt(1);
+                    if (desafio instanceof DesafioLacuna dl) {
+                        salvarLacuna(dl, idDesafio, conn);
+                    }
+                    if (desafio instanceof DesafioMultiplaEscolha dm) {
+                        salvarMultiplaEscolha(dm, idDesafio, conn);
+                    }
                 }
             }
+        } catch (SQLException e) { e.printStackTrace(); }
+    }
 
-        } catch (SQLException e) {
-
-            e.printStackTrace();
+    private void salvarLacuna(DesafioLacuna d, int idDesafio, Connection conn) throws SQLException {
+        String sql = "INSERT INTO desafio_lacuna (id_desafio, texto_antes, texto_depois, palavra_omitida) VALUES (?, ?, ?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idDesafio);
+            ps.setString(2, d.getTextoAntes());
+            ps.setString(3, d.getTextoDepois());
+            ps.setString(4, d.getPalavraOmitida());
+            ps.executeUpdate();
         }
     }
 
-    private void salvarLacuna(
-            DesafioLacuna d,
-            int idDesafio,
-            Connection conn
-    ) throws SQLException {
-
-        String sql = """
-        INSERT INTO desafio_lacuna
-        (
-            id_desafio,
-            texto_antes,
-            texto_depois,
-            palavra_omitida
-        )
-        VALUES (?, ?, ?, ?)
-    """;
-
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        ps.setInt(1, idDesafio);
-        ps.setString(2, d.getTextoAntes());
-        ps.setString(3, d.getTextoDepois());
-        ps.setString(4, d.getPalavraOmitida());
-
-        ps.executeUpdate();
+    private void salvarMultiplaEscolha(DesafioMultiplaEscolha d, int idDesafio, Connection conn) throws SQLException {
+        String sql = "INSERT INTO desafio_multipla_escolha (id_desafio, opcoes) VALUES (?, ?)";
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, idDesafio);
+            ps.setString(2, d.getOpcoesSemicolon());
+            ps.executeUpdate();
+        }
     }
 
-    private void salvarMultiplaEscolha(
-            DesafioMultiplaEscolha d,
-            int idDesafio,
-            Connection conn
-    ) throws SQLException {
+    public List<Modulo> listarModulos() {
+        List<Modulo> modulos = new ArrayList<>();
+        // Mapeado com o nome real da tabela: 'modulos' e o setter 'setTitulo'
+        String sql = "SELECT id, titulo, descricao, ordem, ativo FROM modulos WHERE ativo = true ORDER BY ordem ASC";
 
-        String sql = """
-        INSERT INTO desafio_multipla_escolha
-        (
-            id_desafio,
-            opcoes
-        )
-        VALUES (?, ?)
-    """;
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
 
-        PreparedStatement ps = conn.prepareStatement(sql);
-
-        ps.setInt(1, idDesafio);
-        ps.setString(2, d.getOpcoesSemicolon());
-
-        ps.executeUpdate();
+            while (rs.next()) {
+                Modulo m = new Modulo();
+                m.setId(rs.getInt("id"));
+                m.setTitulo(rs.getString("titulo"));
+                m.setDescricao(rs.getString("descricao"));
+                m.setOrdem(rs.getInt("ordem"));
+                m.setAtivo(rs.getBoolean("ativo"));
+                modulos.add(m);
+            }
+        } catch (SQLException e) { e.printStackTrace(); }
+        return modulos;
     }
 }

@@ -13,10 +13,10 @@ public class UsuarioDAO {
 
     /**
      * Salva um novo usuário no banco de dados.
-     * XP inicial: 0 | Nível inicial: 1 | Streak inicial: 0
+     * XP inicial: 0 | Nível inicial: 1 | Streak inicial: 0 | Perfil inicial: ESTUDANTE
      */
     public boolean cadastrar(Usuario usuario) {
-        String sql = "INSERT INTO usuario (nome, email, senha, xp, nivel, streak) VALUES (?, ?, ?, 0, 1, 0)";
+        String sql = "INSERT INTO usuario (nome, email, senha, xp, nivel, streak, perfil) VALUES (?, ?, ?, 0, 1, 0, 'ESTUDANTE')";
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -44,7 +44,7 @@ public class UsuarioDAO {
             stmt.setInt(2, usuarioId);
 
             int linhasAfetadas = stmt.executeUpdate();
-            return linhasAfetadas > 0; // Retorna true se a alteração foi persistida com sucesso
+            return linhasAfetadas > 0;
 
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar nome no banco de dados: " + e.getMessage());
@@ -54,29 +54,32 @@ public class UsuarioDAO {
 
     /**
      * Busca um usuário pelo e-mail (usado no Login).
+     * Mapeia a coluna 'perfil' para popular as permissões em memória.
      */
     public Usuario buscarPorEmail(String email) {
-        String sql = "SELECT * FROM usuario WHERE email = ?";
+        String sql = "SELECT id, nome, email, senha, xp, nivel, streak, ultimo_acesso, perfil FROM usuario WHERE email = ?";
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, email);
-            ResultSet rs = stmt.executeQuery();
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setId(rs.getInt("id"));
+                    u.setNome(rs.getString("nome"));
+                    u.setEmail(rs.getString("email"));
+                    u.setSenha(rs.getString("senha"));
+                    u.setXp(rs.getInt("xp"));
+                    u.setNivel(rs.getInt("nivel"));
+                    u.setStreak(rs.getInt("streak"));
+                    u.setPerfil(rs.getString("perfil")); // Sincroniza a role do banco com a sessão
 
-            if (rs.next()) {
-                Usuario u = new Usuario();
-                u.setId(rs.getInt("id"));
-                u.setNome(rs.getString("nome"));
-                u.setEmail(rs.getString("email"));
-                u.setSenha(rs.getString("senha"));
-                u.setXp(rs.getInt("xp"));
-                u.setNivel(rs.getInt("nivel"));
-                u.setStreak(rs.getInt("streak"));
-                if (rs.getDate("ultimo_acesso") != null) {
-                    u.setUltimoAcesso(rs.getDate("ultimo_acesso").toLocalDate());
+                    if (rs.getDate("ultimo_acesso") != null) {
+                        u.setUltimoAcesso(rs.getDate("ultimo_acesso").toLocalDate());
+                    }
+                    return u;
                 }
-                return u;
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -113,7 +116,6 @@ public class UsuarioDAO {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, usuario.getStreak());
-            // Converte LocalDate do Java para Date do SQL
             stmt.setDate(2, Date.valueOf(usuario.getUltimoAcesso()));
             stmt.setInt(3, usuario.getId());
 
@@ -125,7 +127,6 @@ public class UsuarioDAO {
 
     public List<Usuario> buscarRanking() {
         List<Usuario> ranking = new ArrayList<>();
-        // Busca os top 10 ordenados por XP de forma decrescente
         String sql = "SELECT nome, xp, nivel FROM usuario ORDER BY xp DESC LIMIT 10";
 
         try (Connection conn = DatabaseConfig.getConnection();
@@ -146,31 +147,25 @@ public class UsuarioDAO {
     }
 
     public int contarConcluidosHoje(int usuarioId) {
-
         String sql = """
-        SELECT COUNT(*)
-        FROM progresso
-        WHERE usuario_id = ?
-        AND DATE(data_conclusao) = CURDATE()
-    """;
+            SELECT COUNT(*)
+            FROM progresso
+            WHERE usuario_id = ?
+            AND DATE(data_conclusao) = CURDATE()
+        """;
 
-        try (
-                Connection conn = DatabaseConfig.getConnection();
-                PreparedStatement stmt = conn.prepareStatement(sql)
-        ) {
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, usuarioId);
-
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return rs.getInt(1);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1);
+                }
             }
-
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return 0;
     }
 }
