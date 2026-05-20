@@ -10,17 +10,19 @@ public class UsuarioService {
      * Calcula o nível baseado no XP e atualiza o objeto e o banco.
      */
     public void processarGanhoXp(Usuario usuario, int xpGanhado) {
-        int novoXpTotal = usuario.getXp() + xpGanhado;
-        usuario.setXp(novoXpTotal);
 
-        // Lógica de Level Up: 1 nível a cada 100 XP
+        int novoXpTotal = usuario.getXp() + xpGanhado;
+
         int novoNivel = (novoXpTotal / 100) + 1;
 
-        if (novoNivel > usuario.getNivel()) {
-            usuario.setNivel(novoNivel);
-            // Sincroniza o novo nível no banco
-            usuarioDAO.atualizarProgresso(usuario.getId(), novoXpTotal, novoNivel);
-        }
+        usuario.setXp(novoXpTotal);
+        usuario.setNivel(novoNivel);
+
+        usuarioDAO.atualizarProgresso(
+                usuario.getId(),
+                novoXpTotal,
+                novoNivel
+        );
     }
 
     public Usuario atualizarStreak(Usuario usuario) {

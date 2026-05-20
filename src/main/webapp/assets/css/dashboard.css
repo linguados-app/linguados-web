@@ -364,3 +364,513 @@
         padding: 20px;
     }
 }
+
+.bar {
+    position: relative;
+    transition: height 0.3s ease;
+}
+
+.bar-value {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    font-weight: bold;
+    color: #4c6ef5;
+    margin-bottom: 5px;
+    white-space: nowrap;
+}
+
+/* Ajuste da altura mínima das barras */
+.bar-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+}
+
+.bar {
+    width: 100%;
+    max-width: 40px;
+    background: linear-gradient(135deg, #4c6ef5 0%, #845ef7 100%);
+    border-radius: 12px 12px 8px 8px;
+    transition: height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    min-height: 4px;
+}
+
+.bar:hover {
+    opacity: 0.8;
+    transform: scaleX(1.05);
+}
+
+/* =========================
+   ADICIONAR NO FINAL DO ARQUIVO dashboard.css
+   CORREÇÕES DO GRÁFICO SEMANAL
+========================= */
+
+/* Wrapper para melhor espaçamento */
+.weekly-chart-wrapper {
+    margin-top: 20px;
+    padding: 20px 10px;
+    background: #fafbff;
+    border-radius: 20px;
+}
+
+/* Container das barras - MAIOR */
+.weekly-bars {
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-end;
+    gap: 20px;
+    min-height: 280px;
+    padding: 10px 0;
+}
+
+/* Cada barra item */
+.bar-item {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Container da barra para alinhamento */
+.bar-container {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    min-height: 200px;
+}
+
+/* Estilo da barra - MAIS LARGA E ALTA */
+.bar {
+    width: 50px;
+    max-width: 60px;
+    background: linear-gradient(180deg, #6c4cff 0%, #9b7bff 100%);
+    border-radius: 16px 16px 8px 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+    position: relative;
+    box-shadow: 0 2px 8px rgba(108, 76, 255, 0.3);
+    min-height: 4px;
+}
+
+.bar:hover {
+    transform: scaleX(1.08);
+    box-shadow: 0 4px 16px rgba(108, 76, 255, 0.4);
+}
+
+/* Valor em cima da barra */
+.bar-value {
+    position: absolute;
+    top: -28px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 13px;
+    font-weight: 800;
+    color: #6c4cff;
+    white-space: nowrap;
+    background: white;
+    padding: 2px 8px;
+    border-radius: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    font-family: 'Nunito', sans-serif;
+}
+
+/* Dia da semana */
+.bar-day {
+    font-size: 13px;
+    font-weight: 700;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Ajuste do card semanal */
+.weekly-card {
+    overflow: visible;
+}
+
+/* Responsivo para telas menores */
+@media (max-width: 768px) {
+    .bar {
+        width: 35px;
+    }
+
+    .weekly-bars {
+        gap: 10px;
+        min-height: 240px;
+    }
+
+    .bar-container {
+        min-height: 160px;
+    }
+
+    .bar-value {
+        font-size: 11px;
+        top: -24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .bar {
+        width: 28px;
+    }
+
+    .bar-day {
+        font-size: 11px;
+    }
+}
+
+/* Mantém seu estilo original do progresso */
+.progress {
+    height: 10px;
+    background: #eceef7;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #6c4cff;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+.trail-percentage {
+    font-weight: 800;
+    color: #6c4cff;
+    font-size: 18px;
+}
+
+/* Alert success - se não tiver */
+.alert-success {
+    background-color: #e6fcf5;
+    border: 1px solid #c3fae8;
+    color: #0ca678;
+    padding: 16px 20px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* =========================
+   ANIMAÇÕES E HOVER EFFECTS
+========================= */
+
+/* Efeito de crescimento nos cards */
+.dashboard-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+}
+
+/* Efeito nos cards de estatística */
+.dashboard-stat-card {
+    transition: all 0.25s ease;
+}
+
+.dashboard-stat-card:hover {
+    transform: translateY(-3px);
+    background: linear-gradient(135deg, #ffffff 0%, #fafbff 100%);
+    border-color: #e0e4f0;
+}
+
+.dashboard-stat-card:hover .stat-icon {
+    transform: scale(1.1);
+    background: #6c4cff;
+    color: white;
+}
+
+.stat-icon {
+    transition: all 0.25s ease;
+}
+
+/* Efeito nos módulos em progresso */
+.trail-item {
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+}
+
+.trail-item:hover {
+    transform: translateX(6px);
+    background: linear-gradient(135deg, #ffffff 0%, #f8f6ff 100%);
+    border-color: #d4ccff;
+    box-shadow: 0 4px 12px rgba(108, 76, 255, 0.1);
+}
+
+.trail-item:hover .trail-percentage {
+    transform: scale(1.05);
+    color: #8b5cf6;
+}
+
+.trail-percentage {
+    transition: all 0.2s ease;
+}
+
+/* Efeito na barra de progresso */
+.progress-fill {
+    transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.progress-fill::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.3) 50%,
+    rgba(255,255,255,0) 100%);
+    animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+/* Efeito no hover da barra de progresso */
+.trail-item:hover .progress-fill {
+    background: linear-gradient(90deg, #6c4cff, #9b7bff);
+}
+
+/* GRÁFICO SEMANAL - CORES E ANIMAÇÕES MELHORADAS */
+.weekly-chart-wrapper {
+    transition: all 0.3s ease;
+}
+
+.weekly-card:hover .weekly-chart-wrapper {
+    background: linear-gradient(135deg, #fafbff 0%, #f5f3ff 100%);
+}
+
+/* Barras com gradiente e animação */
+.bar {
+    background: linear-gradient(180deg, #6c4cff 0%, #9b7bff 100%);
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+/* Efeito de brilho na barra */
+.bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg,
+    transparent,
+    rgba(255,255,255,0.3),
+    transparent);
+    transition: left 0.5s ease;
+}
+
+.bar:hover::before {
+    left: 100%;
+}
+
+/* Hover da barra - CRESCE e MUDA COR */
+.bar:hover {
+    transform: scaleX(1.15) scaleY(1.05);
+    background: linear-gradient(180deg, #8b5cf6 0%, #a78bfa 100%);
+    box-shadow: 0 4px 16px rgba(108, 76, 255, 0.5);
+}
+
+/* Valor da barra no hover */
+.bar:hover .bar-value {
+    transform: translateX(-50%) scale(1.1);
+    background: #6c4cff;
+    color: white;
+    box-shadow: 0 4px 12px rgba(108, 76, 255, 0.3);
+}
+
+.bar-value {
+    transition: all 0.2s ease;
+    font-weight: 800;
+}
+
+/* Efeito nos dias da semana */
+.bar-day {
+    transition: all 0.2s ease;
+    font-weight: 600;
+}
+
+.bar-item:hover .bar-day {
+    color: #6c4cff;
+    transform: translateY(-2px);
+    font-weight: 800;
+}
+
+/* Efeito no container da barra */
+.bar-container {
+    transition: all 0.2s ease;
+}
+
+.bar-item:hover .bar-container {
+    transform: translateY(-2px);
+}
+
+/* Efeito nos links da sidebar */
+.nav-link {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.nav-link:hover {
+    transform: translateX(6px);
+    background: linear-gradient(135deg, #f3f0ff 0%, #faf8ff 100%);
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, #6c4cff 0%, #8b5cf6 100%);
+    color: white;
+    box-shadow: 0 4px 12px rgba(108, 76, 255, 0.25);
+}
+
+.nav-link.active:hover {
+    transform: translateX(6px);
+    background: linear-gradient(135deg, #7c5cff 0%, #9b6bf6 100%);
+    box-shadow: 0 6px 16px rgba(108, 76, 255, 0.35);
+}
+
+/* Efeito no botão toggle */
+.toggle-btn {
+    transition: all 0.2s ease;
+}
+
+.toggle-btn:hover {
+    transform: scale(1.1);
+    background: #6c4cff;
+    color: white;
+}
+
+/* Efeito no avatar */
+.user-avatar {
+    transition: all 0.25s ease;
+}
+
+.user-info-footer:hover .user-avatar {
+    transform: scale(1.05) rotate(2deg);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Efeito no footer admin */
+.admin-link {
+    transition: all 0.25s ease;
+    display: inline-block;
+}
+
+.admin-link:hover {
+    transform: translateY(-2px);
+    color: #8b5cf6;
+    text-shadow: 0 2px 4px rgba(108, 76, 255, 0.2);
+}
+
+/* Efeito no welcome card */
+.welcome-card {
+    transition: all 0.3s ease;
+}
+
+.welcome-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 20px 35px -15px rgba(108, 76, 255, 0.3);
+}
+
+/* Efeito no duck card */
+.duck-card {
+    transition: all 0.3s ease;
+}
+
+.duck-card:hover {
+    transform: translateY(-3px);
+}
+
+.duck-card:hover .duck-emoji {
+    transform: scale(1.1) rotate(5deg);
+}
+
+.duck-emoji {
+    transition: all 0.25s ease;
+}
+
+/* Efeito pulsante suave no botão de daily goal quando próximo da meta */
+@keyframes gentlePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.7; }
+}
+
+.dashboard-stat-card:last-child:hover strong {
+    animation: gentlePulse 0.5s ease;
+}
+
+/* Melhorias nas cores dos ícones */
+.stat-icon {
+    background: linear-gradient(135deg, #f3f0ff 0%, #ede8ff 100%);
+    color: #6c4cff;
+}
+
+.dashboard-stat-card:hover .stat-icon {
+    background: linear-gradient(135deg, #6c4cff 0%, #8b5cf6 100%);
+    color: white;
+}
+
+/* Animação de entrada suave para os cards */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard-card {
+    animation: fadeInUp 0.4s ease backwards;
+}
+
+.dashboard-card:nth-child(1) { animation-delay: 0s; }
+.dashboard-card:nth-child(2) { animation-delay: 0.05s; }
+.dashboard-card:nth-child(3) { animation-delay: 0.1s; }
+.dashboard-card:nth-child(4) { animation-delay: 0.15s; }
+.dashboard-card:nth-child(5) { animation-delay: 0.2s; }
+.dashboard-card:nth-child(6) { animation-delay: 0.25s; }
+
+/* Scrollbar personalizada */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, #6c4cff, #9b7bff);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, #8b5cf6, #a78bfa);
+}

@@ -122,6 +122,17 @@ CREATE TABLE IF NOT EXISTS chat_mensagens (
 
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Atualizar os módulos com títulos mais adequados
+UPDATE modulos SET titulo = 'API Documentation' WHERE id = 1;
+UPDATE modulos SET titulo = 'Technical Reading' WHERE id = 2;
+UPDATE modulos SET titulo = 'Database & SQL' WHERE id = 3;
+
+-- Verificar quantos desafios cada módulo tem
+SELECT m.titulo, COUNT(d.id) as total_desafios
+FROM modulos m
+         LEFT JOIN desafio d ON d.id_modulo = m.id
+GROUP BY m.id;
+
 -- ==========================================================
 -- USUÁRIOS
 -- ==========================================================
@@ -146,11 +157,11 @@ INSERT IGNORE INTO modulos (
     ativo
 ) VALUES
 
-(1, 'Módulo 1', 'Introdução ao Inglês Técnico', 1, true),
+(1, 'Modulo 1', 'Introducao ao Ingles Tecnico', 1, true),
 
-(2, 'Módulo 2', 'Java e Programação', 2, true),
+(2, 'Modulo 2', 'Java e Programacao', 2, true),
 
-(3, 'Módulo 3', 'Banco de Dados e SQL', 3, true);
+(3, 'Modulo 3', 'Banco de Dados e SQL', 3, true);
 
 -- ==========================================================
 -- DESAFIO 1

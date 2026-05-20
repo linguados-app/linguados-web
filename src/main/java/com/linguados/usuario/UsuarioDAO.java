@@ -144,4 +144,33 @@ public class UsuarioDAO {
         }
         return ranking;
     }
+
+    public int contarConcluidosHoje(int usuarioId) {
+
+        String sql = """
+        SELECT COUNT(*)
+        FROM progresso
+        WHERE usuario_id = ?
+        AND DATE(data_conclusao) = CURDATE()
+    """;
+
+        try (
+                Connection conn = DatabaseConfig.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)
+        ) {
+
+            stmt.setInt(1, usuarioId);
+
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
 }
