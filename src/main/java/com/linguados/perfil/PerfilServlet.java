@@ -2,13 +2,18 @@ package com.linguados.perfil;
 
 import com.linguados.usuario.Usuario;
 import com.linguados.usuario.UsuarioDAO;
+import com.linguados.usuario.Conquista;
+import com.linguados.usuario.ConquistaDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.util.List;
 
 @WebServlet("/perfil")
 public class PerfilServlet extends HttpServlet {
+
+    private ConquistaDAO conquistaDAO = new ConquistaDAO();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -21,6 +26,10 @@ public class PerfilServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
+
+        // Recupera a lista real de conquistas salvas no MySQL para este ID
+        List<Conquista> listaConquistas = conquistaDAO.buscarConquistasPorUsuario(usuario.getId());
+        request.setAttribute("conquistas", listaConquistas);
 
         request.getRequestDispatcher("/WEB-INF/views/perfil/perfil.jsp").forward(request, response);
     }
@@ -37,29 +46,23 @@ public class PerfilServlet extends HttpServlet {
             return;
         }
 
-        // 1. Pega o novo nome enviado pelo formulário HTML
         String novoNome = request.getParameter("nome");
 
         if (novoNome != null && !novoNome.trim().isEmpty()) {
             String nomeFormatado = novoNome.trim();
 
-            // 2. Instancia a classe DAO e executa a persistência no banco de dados
             UsuarioDAO dao = new UsuarioDAO();
             boolean atualizouNoBanco = dao.atualizarNome(usuario.getId(), nomeFormatado);
 
             if (atualizouNoBanco) {
-                // 3. Só altera o objeto em memória (Sessão) se salvou permanentemente no banco
                 usuario.setNome(nomeFormatado);
                 session.setAttribute("usuarioLogado", usuario);
 
-                // Redireciona com parâmetro de sucesso
                 response.sendRedirect(request.getContextPath() + "/perfil?mensagem=Nome+atualizado+com+sucesso!");
             } else {
-                // Se falhar a query, avisa na barra de mensagens
                 response.sendRedirect(request.getContextPath() + "/perfil?mensagem=Erro+ao+salvar+no+banco+de+dados!");
             }
         } else {
-            // Se enviar um campo vazio, apenas recarrega o perfil
             response.sendRedirect(request.getContextPath() + "/perfil");
         }
     }

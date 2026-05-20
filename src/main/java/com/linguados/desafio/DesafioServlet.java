@@ -31,7 +31,6 @@ public class DesafioServlet extends HttpServlet {
         String idParam = request.getParameter("id");
 
         if (idParam == null) {
-
             String moduloParam = request.getParameter("modulo");
 
             if (moduloParam == null) {
@@ -39,14 +38,15 @@ public class DesafioServlet extends HttpServlet {
                 return;
             }
 
-            int idModulo = Integer.parseInt(moduloParam);
+            try {
+                int idModulo = Integer.parseInt(moduloParam);
+                List<Desafio> lista = desafioDAO.listarPorModulo(idModulo);
 
-            List<Desafio> lista = desafioDAO.listarPorModulo(idModulo);
-
-            request.setAttribute("listaDesafios", lista);
-
-            request.getRequestDispatcher("/WEB-INF/views/desafio/lista.jsp")
-                    .forward(request, response);
+                request.setAttribute("listaDesafios", lista);
+                request.getRequestDispatcher("/WEB-INF/views/desafio/lista.jsp").forward(request, response);
+            } catch (NumberFormatException e) {
+                response.sendRedirect(request.getContextPath() + "/dashboard");
+            }
         } else {
             try {
                 int id = Integer.parseInt(idParam);
@@ -64,10 +64,10 @@ public class DesafioServlet extends HttpServlet {
                     }
                     request.getRequestDispatcher(view).forward(request, response);
                 } else {
-                    response.sendRedirect(request.getContextPath() + "/desafios");
+                    response.sendRedirect(request.getContextPath() + "/dashboard");
                 }
             } catch (NumberFormatException e) {
-                response.sendRedirect(request.getContextPath() + "/desafios");
+                response.sendRedirect(request.getContextPath() + "/dashboard");
             }
         }
     }
@@ -99,7 +99,7 @@ public class DesafioServlet extends HttpServlet {
                 boolean sucesso = progressoDAO.salvarProgresso(usuario.getId(), desafioId, desafio.getXpRecompensa());
 
                 if (sucesso) {
-                    // Atualiza o objeto da sessão com o novo XP e verifica Level Up
+                    // processarGanhoXp gerencia o XP base, o Level Up e o gatilho da Badge
                     usuarioService.processarGanhoXp(usuario, desafio.getXpRecompensa());
                     session.setAttribute("usuarioLogado", usuario);
                 }
@@ -110,7 +110,6 @@ public class DesafioServlet extends HttpServlet {
 
             response.sendRedirect(request.getContextPath() + "/dashboard?mensagemConcluido=" + mensagemCodificada);
         } else {
-            // Feedback de erro: volta para o mesmo desafio
             response.sendRedirect(request.getContextPath() + "/desafios?id=" + desafioId + "&feedback=errou");
         }
     }

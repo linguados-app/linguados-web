@@ -5,26 +5,55 @@ import java.time.temporal.ChronoUnit;
 
 public class UsuarioService {
     private UsuarioDAO usuarioDAO = new UsuarioDAO();
+    private ConquistaDAO conquistaDAO = new ConquistaDAO(); // Injetando o novo DAO
 
     /**
-     * Calcula o nível baseado no XP e atualiza o objeto e o banco.
+     * Calcula o nível baseado no XP, atualiza o objeto, o banco de dados
+     * e dispara gatilhos de conquistas (Achievements).
      */
     public void processarGanhoXp(Usuario usuario, int xpGanhado) {
-
         int novoXpTotal = usuario.getXp() + xpGanhado;
+        usuario.setXp(novoXpTotal);
 
+        // Lógica de Level Up: 1 nível a cada 100 XP
         int novoNivel = (novoXpTotal / 100) + 1;
 
-        usuario.setXp(novoXpTotal);
-        usuario.setNivel(novoNivel);
+        if (novoNivel > usuario.getNivel()) {
+            usuario.setNivel(novoNivel);
+            // Sincroniza o novo nível e XP no banco
+            usuarioDAO.atualizarProgresso(usuario.getId(), novoXpTotal, novoNivel);
+        } else {
+            // Se não subiu de nível, ainda precisamos atualizar o XP no banco!
+            usuarioDAO.atualizarProgresso(usuario.getId(), novoXpTotal, usuario.getNivel());
+        }
 
-        usuarioDAO.atualizarProgresso(
-                usuario.getId(),
-                novoXpTotal,
-                novoNivel
-        );
+        // ==========================================
+        // GATILHO DE CONQUISTAS (TRIGGERS)
+        // ==========================================
+
+        // Tenta conceder a conquista da primeira missão.
+        // O método concederConquista já checa internamente se o usuário já tem ela.
+        boolean ganhouConquista = conquistaDAO.concederConquista(usuario.getId(), "PRIMEIRA_MISSAO");
+
+        if (ganhouConquista) {
+            // Se ganhou a badge agora, recebe +50 XP de bônus!
+            int xpBonusConquista = 50;
+            int xpComBonus = usuario.getXp() + xpBonusConquista;
+            usuario.setXp(xpComBonus);
+
+            // Recalcula o nível caso o bônus da conquista faça ele upar
+            int nivelComBonus = (xpComBonus / 100) + 1;
+            usuario.setNivel(nivelComBonus);
+
+            // Salva a bonificação final no banco de dados
+            usuarioDAO.atualizarProgresso(usuario.getId(), xpComBonus, nivelComBonus);
+            System.out.println("[TRIGGER] Usuario " + usuario.getNome() + " desbloqueou a conquista: PRIMEIRA_MISSAO (+50 XP)");
+        }
     }
 
+    /**
+     * Atualiza o contador de dias seguidos (Streak) do usuário.
+     */
     public Usuario atualizarStreak(Usuario usuario) {
         LocalDate hoje = LocalDate.now();
         LocalDate ultimoAcesso = usuario.getUltimoAcesso();

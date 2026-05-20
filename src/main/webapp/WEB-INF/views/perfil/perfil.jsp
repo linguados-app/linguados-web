@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dashboard.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/perfil.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght=700;800&display=swap" rel="stylesheet">
 </head>
 <body class="dashboard-body">
 
@@ -66,6 +66,29 @@
                     <strong>${usuarioLogado.ultimoAcesso}</strong>
                     <small>Last Activity</small>
                 </div>
+            </div>
+        </section>
+
+        <section class="card" style="margin-top: 30px; padding: 30px;">
+            <div style="margin-bottom: 20px;">
+                <small class="card-label">CONQUISTAS</small>
+                <h2 style="margin: 0; font-size: 24px; color: var(--text-main);">Minhas Insígnias 🏆</h2>
+            </div>
+
+            <div class="badges-grid" style="display: flex; gap: 20px; flex-wrap: wrap;">
+                <c:choose>
+                    <c:when test="${not empty conquistas}">
+                        <c:forEach var="conquista" items="${conquistas}">
+                            <div class="badge-item" title="${conquista.descricao}" style="text-align: center; width: 120px; padding: 20px 15px; border: 2px solid #E5E5E5; border-bottom: 5px solid #E5E5E5; border-radius: 20px; background: #FFF; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                                <div class="badge-icon" style="font-size: 42px; margin-bottom: 8px;">${conquista.badgeIcone}</div>
+                                <strong style="display: block; font-size: 14px; color: var(--text-main); line-height: 1.2; font-weight: 800;">${conquista.titulo}</strong>
+                            </div>
+                        </c:forEach>
+                    </c:when>
+                    <c:otherwise>
+                        <p style="color: #afafaf; font-weight: 700; margin: 0; font-size: 15px;">Nenhuma conquista desbloqueada ainda. Complete desafios para ganhar medalhas!</p>
+                    </c:otherwise>
+                </c:choose>
             </div>
         </section>
 
