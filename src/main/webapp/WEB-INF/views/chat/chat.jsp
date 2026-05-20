@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -32,7 +33,14 @@
             </div>
 
             <div id="chat-window" class="chat-window">
-                <!-- As mensagens aparecerão aqui -->
+                <c:forEach var="msg" items="${historicoChat}">
+                    <div class="message ${msg[0] == usuarioLogado.nome ? 'sent' : 'received'}">
+                        <div class="msg-content">
+                            <small>${msg[0]}</small>
+                            <p>${msg[1]}</p>
+                        </div>
+                    </div>
+                </c:forEach>
             </div>
 
             <div class="chat-input-area">
@@ -43,7 +51,6 @@
     </main>
 
     <script>
-        // Conexão WebSocket
         const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
         const wsUri = wsProtocol + window.location.host + "${pageContext.request.contextPath}/chatServer";
         const websocket = new WebSocket(wsUri);
@@ -52,6 +59,9 @@
         const messageInput = document.getElementById('message-input');
         const sendBtn = document.getElementById('send-btn');
         const userName = "${usuarioLogado.nome}";
+
+        // Faz o scroll rolar automático para o final do histórico ao carregar
+        chatWindow.scrollTop = chatWindow.scrollHeight;
 
         websocket.onmessage = function(evt) {
             const data = JSON.parse(evt.data);
@@ -76,6 +86,14 @@
             if (text !== "") {
                 const msg = JSON.stringify({ user: userName, text: text });
                 websocket.send(msg);
+
+                // Salva mensagens enviadas por texto via requisição assíncrona POST
+                fetch("${pageContext.request.contextPath}/chat", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                    body: "texto=" + encodeURIComponent(text)
+                });
+
                 messageInput.value = "";
             }
         }

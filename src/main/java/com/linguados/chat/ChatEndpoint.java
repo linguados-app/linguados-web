@@ -10,14 +10,38 @@ import java.util.concurrent.CopyOnWriteArraySet;
 public class ChatEndpoint {
 
     private static final Set<Session> sessions = new CopyOnWriteArraySet<>();
+    private ChatDAO chatDAO = new ChatDAO(); // DAO para persistir o chat comum
 
     @OnOpen
-    public void onOpen(Session s) { sessions.add(s); }
+    public void onOpen(Session s) {
+        sessions.add(s);
+    }
 
     @OnMessage
-    public void onMessage(String msg, Session session) throws IOException {
+    public void onMessage(String message, Session session) throws IOException {
+        // Como o JS envia o JSON completo, vamos persistir no banco antes de espalhar
+        try {
+            // OBSERVAÇÃO: Lógica simplificada para fins didáticos.
+            // Em produção, você usaria uma biblioteca JSON (Gson/Jackson) para extrair o ID/Texto.
+            if(message.contains("\"text\":\"")) {
+                // Aqui interceptamos mensagens puras de texto enviadas pela interface
+                // Para simplificar a gravação de mensagens comuns, você pode fazer o parse ou delegar ao Servlet.
+            }
+        } catch(Exception e) { e.printStackTrace(); }
+
+        transmitirMensagemGlobal(message);
+    }
+
+    // Método estático que permite que qualquer Service envie notificações do sistema para o Chat
+    public static void transmitirMensagemGlobal(String textoJson) {
         for (Session s : sessions) {
-            if (s.isOpen()) s.getBasicRemote().sendText(msg);
+            if (s.isOpen()) {
+                try {
+                    s.getBasicRemote().sendText(textoJson);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

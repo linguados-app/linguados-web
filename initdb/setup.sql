@@ -142,7 +142,15 @@ CREATE TABLE IF NOT EXISTS usuario_conquista (
     FOREIGN KEY (conquista_id) REFERENCES conquista(id) ON DELETE CASCADE
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Inserção da Conquista Inicial (Gatilho solicitado)
+CREATE TABLE IF NOT EXISTS chat_mensagens (
+      id INT AUTO_INCREMENT PRIMARY KEY,
+      usuario_id INT NOT NULL,
+      conteudo TEXT NOT NULL,
+      data_envio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Inserção da Conquista Inicial
 INSERT IGNORE INTO conquista (id, codigo, titulo, descricao, badge_icone, xp_bonus)
 VALUES (1, 'PRIMEIRA_MISSAO', 'Primeiro Passo', 'Você completou o seu primeiro desafio no Linguados!', '🚀', 50);
 
