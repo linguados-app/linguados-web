@@ -56,18 +56,18 @@ jobs:
           sed -n '1,/^## Funcionalidades/p' README.md.backup | head -n -1 > README_temp.md
           
           # Add updated timestamp section
-          cat >> README_temp.md << 'EOF'
-
-  > **Última atualização:** ${{ steps.stats.outputs.last_update }}
-  >
-  > **Estatísticas do Projeto:**
-  > - 📊 Total de Commits: ${{ steps.stats.outputs.commit_count }}
-  > - 📝 Linhas de Código: ${{ steps.stats.outputs.lines_of_code }}
-  > - 👥 Contribuidores: ${{ steps.stats.outputs.contributors }}
-
----
-
-## Funcionalidades (MVP)
+          cat >> README_temp.md << EOF
+          
+          > **Última atualização:** ${{ steps.stats.outputs.last_update }}
+          >
+          > **Estatísticas do Projeto:**
+          > - 📊 Total de Commits: ${{ steps.stats.outputs.commit_count }}
+          > - 📝 Linhas de Código: ${{ steps.stats.outputs.lines_of_code }}
+          > - 👥 Contribuidores: ${{ steps.stats.outputs.contributors }}
+          
+          ---
+          
+          ## Funcionalidades (MVP)
           EOF
           
           # Append rest of the file
