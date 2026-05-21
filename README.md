@@ -19,6 +19,27 @@ O **Linguados** é uma aplicação focada no ensino de inglês técnico para pro
 
 ---
 
+
+> **Última atualização:** 21 de May de 2026 às 04:11 UTC
+>
+> **Estatísticas do Projeto:**
+> - 📊 Total de Commits: 56
+> - 📝 Linhas de Código: 4931
+> - 👥 Contribuidores: 0
+
+---
+
+## Funcionalidades (MVP)
+
+> **Última atualização:** 21 de May de 2026 às 03:58 UTC
+>
+> **Estatísticas do Projeto:**
+> - 📊 Total de Commits: 54
+> - 📝 Linhas de Código: 4931
+> - 👥 Contribuidores: 0
+
+---
+
 ## Funcionalidades (MVP)
 ## Funcionalidades (MVP)
 
