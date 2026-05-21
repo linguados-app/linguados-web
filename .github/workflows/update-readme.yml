@@ -4,11 +4,16 @@ on:
   workflow_dispatch:
 
   schedule:
+    # Todo domingo meia-noite UTC
     - cron: "0 0 * * 0"
 
 permissions:
   contents: write
   pull-requests: write
+
+concurrency:
+  group: ai-readme-generator
+  cancel-in-progress: true
 
 jobs:
   ai-readme:
@@ -30,20 +35,22 @@ jobs:
         run: |
           pip install google-genai
 
+      - name: 🌳 Install Tree
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tree
+
       - name: 🧠 Analyze Repository Structure
-        id: analyze
         run: |
           echo "📂 Generating repository map..."
 
-          tree -I '.git|node_modules|dist|build|venv|__pycache__' -L 4 > structure.txt || true
-
-          echo "📊 Counting languages..."
-
-          find . -type f | sed 's|^\./||' > files.txt
+          tree -I '.git|node_modules|dist|build|venv|__pycache__|.next|coverage' -L 4 > structure.txt || true
 
           echo "📜 Extracting important files..."
 
-          mkdir context
+          mkdir -p context
+
+          touch context/repository_context.txt
 
           for file in $(find . \
             -type f \
@@ -55,90 +62,129 @@ jobs:
             -o -name "*.java" \
             -o -name "*.go" \
             -o -name "*.rs" \
+            -o -name "*.php" \
+            -o -name "*.rb" \
+            -o -name "*.cs" \
+            -o -name "*.cpp" \
+            -o -name "*.c" \
+            -o -name "*.swift" \
+            -o -name "*.kt" \
+            -o -name "*.html" \
+            -o -name "*.css" \
+            -o -name "*.scss" \
+            -o -name "*.json" \
+            -o -name "*.yaml" \
+            -o -name "*.yml" \
             -o -name "*.md" \
             -o -name "package.json" \
             -o -name "requirements.txt" \
-            -o -name "pom.xml" \
             -o -name "Cargo.toml" \
+            -o -name "pom.xml" \
+            -o -name "Dockerfile" \
             \) \
             ! -path "*/node_modules/*" \
             ! -path "*/dist/*" \
             ! -path "*/build/*" \
-            | head -n 120)
+            ! -path "*/coverage/*" \
+            ! -path "*/.next/*" \
+            | head -n 150)
           do
             echo "========== $file ==========" >> context/repository_context.txt
-            head -n 250 "$file" >> context/repository_context.txt || true
+            head -n 300 "$file" >> context/repository_context.txt || true
             echo "" >> context/repository_context.txt
           done
 
       - name: 🤖 Generate README with Gemini
         env:
-          GEMINI_API_KEY: "AIzaSyBdbBJHFaiwiWBTbog-Nb0z-GPFBnnR2-U"
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+
         run: |
-          cat > generate_readme.py << 'EOF'
-          import google.generativeai as genai
+          python << 'EOF'
+          from google import genai
           from pathlib import Path
           import os
 
-          genai.configure(api_key="AIzaSyBdbBJHFaiwiWBTbog-Nb0z-GPFBnnR2-U")
-
-          model = genai.GenerativeModel("gemini-1.5-pro")
+          client = genai.Client(
+              api_key=os.environ["GEMINI_API_KEY"]
+          )
 
           structure = Path("structure.txt").read_text(errors="ignore")
-          context = Path("context/repository_context.txt").read_text(errors="ignore")
+
+          context = Path(
+              "context/repository_context.txt"
+          ).read_text(errors="ignore")
 
           prompt = f"""
           You are an elite senior software architect.
 
-          Your task:
-          Analyze this repository deeply and generate a PROFESSIONAL README.md.
+          Analyze this repository deeply and rewrite the README.md professionally.
 
-          IMPORTANT:
-          - Infer what the project does from the source code
+          IMPORTANT REQUIREMENTS:
+
+          - Infer automatically what the project does
           - Explain architecture
-          - Explain technologies
+          - Explain technologies used
+          - Explain project structure
+          - Detect frameworks automatically
+          - Detect APIs/routes automatically
           - Explain installation
           - Explain usage
-          - Explain API/routes if present
-          - Explain folder structure
-          - Detect features automatically
+          - Generate examples
           - Generate badges
-          - Generate a clean modern README
           - Add emojis
-          - Generate setup instructions
-          - Generate contributing section
-          - Generate license section
+          - Generate feature list
           - Generate troubleshooting section
-          - Generate roadmap ideas
-          - Generate examples if possible
-          - Make it look like a top GitHub repository
+          - Generate roadmap section
+          - Generate contribution guidelines
+          - Generate license section
+          - Make it look like a world-class GitHub repository
+          - Use beautiful markdown formatting
+          - Add code blocks where useful
+          - Create tables when useful
+          - DO NOT hallucinate fake features
+          - DO NOT mention AI generated
+          - Output ONLY markdown
 
-          REPOSITORY STRUCTURE:
+          ==================================================
+          REPOSITORY STRUCTURE
+          ==================================================
+
           {structure}
 
-          REPOSITORY CONTENT:
-          {context}
+          ==================================================
+          REPOSITORY CONTENT
+          ==================================================
 
-          Output ONLY markdown.
+          {context}
           """
 
-          response = model.generate_content(prompt)
+          response = client.models.generate_content(
+              model="gemini-2.5-flash",
+              contents=prompt
+          )
 
           readme = response.text
 
-          Path("README.md").write_text(readme)
+          if readme.startswith("```markdown"):
+              readme = readme.replace("```markdown", "", 1)
+
+          if readme.endswith("```"):
+              readme = readme[:-3]
+
+          Path("README.md").write_text(
+              readme.strip(),
+              encoding="utf-8"
+          )
 
           print("✅ README generated successfully")
           EOF
-
-          python generate_readme.py
 
       - name: 🔍 Preview README
         run: |
           echo "📋 README Preview:"
           head -n 80 README.md
 
-      - name: ✅ Check Changes
+      - name: ✅ Check For Changes
         id: diff
         run: |
           git diff --quiet README.md || echo "changed=true" >> $GITHUB_OUTPUT
@@ -151,10 +197,10 @@ jobs:
 
           git add README.md
 
-          git commit -m "🤖 AI regenerated professional README"
+          git commit -m "🤖 AI regenerated professional README" || exit 0
 
           git push
 
-      - name: 🎉 Finish
+      - name: 🎉 Workflow Completed
         run: |
-          echo "🚀 README regenerated using AI analysis"
+          echo "🚀 README regenerated successfully!"
