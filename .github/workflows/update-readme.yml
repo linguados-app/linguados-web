@@ -1,0 +1,124 @@
+name: 📝 Auto-Update README
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_pr:
+        description: 'Create Pull Request instead of direct commit?'
+        required: false
+        default: 'false'
+        type: boolean
+  schedule:
+    # Runs every Monday at 00:00 UTC
+    - cron: '0 0 * * 0'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-readme:
+    runs-on: ubuntu-latest
+    name: Update README Documentation
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          fetch-depth: 0
+
+      - name: 📊 Get Repository Stats
+        id: stats
+        run: |
+          # Count commits
+          COMMIT_COUNT=$(git rev-list --count HEAD)
+          echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+          
+          # Count lines of code
+          LOC=$(find src -name "*.java" -o -name "*.css" -o -name "*.js" | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
+          echo "lines_of_code=$LOC" >> $GITHUB_OUTPUT
+          
+          # Get last update date
+          LAST_UPDATE=$(date '+%d de %B de %Y às %H:%M UTC')
+          echo "last_update=$LAST_UPDATE" >> $GITHUB_OUTPUT
+          
+          # Count contributors
+          CONTRIBUTORS=$(git shortlog -sn | wc -l)
+          echo "contributors=$CONTRIBUTORS" >> $GITHUB_OUTPUT
+
+      - name: ✏️ Update README with New Content
+        run: |
+          # Create backup
+          cp README.md README.md.backup
+          
+          # Extract header (up to first ## that isn't the title)
+          sed -n '1,/^## Funcionalidades/p' README.md.backup | head -n -1 > README_temp.md
+          
+          # Add updated timestamp section
+          cat >> README_temp.md << 'EOF'
+
+  > **Última atualização:** ${{ steps.stats.outputs.last_update }}
+  >
+  > **Estatísticas do Projeto:**
+  > - 📊 Total de Commits: ${{ steps.stats.outputs.commit_count }}
+  > - 📝 Linhas de Código: ${{ steps.stats.outputs.lines_of_code }}
+  > - 👥 Contribuidores: ${{ steps.stats.outputs.contributors }}
+
+---
+
+## Funcionalidades (MVP)
+  EOF
+  
+  # Append rest of the file
+  tail -n +12 README.md.backup >> README_temp.md
+  
+  # Replace original
+  mv README_temp.md README.md
+  rm README.md.backup
+
+- name: 🔍 Verify Changes
+  run: |
+    echo "📋 README Preview:"
+    head -n 30 README.md
+
+- name: 💾 Commit Changes (Direct)
+  if: ${{ !inputs.create_pr || inputs.create_pr == 'false' }}
+  run: |
+    git config --local user.email "action@github.com"
+    git config --local user.name "GitHub Actions Bot"
+    git add README.md
+    git commit -m "docs: auto-update readme with latest statistics [skip ci]"
+    git push
+
+- name: 🔀 Create Pull Request
+  if: ${{ inputs.create_pr == 'true' }}
+  uses: peter-evans/create-pull-request@v5
+  with:
+    commit-message: "docs: auto-update readme with latest statistics"
+    title: "📝 Auto-Update: README Documentation"
+    body: |
+      ## 🤖 Automated README Update
+      
+      This PR updates the README.md with the latest project statistics:
+      
+      - **Commits:** ${{ steps.stats.outputs.commit_count }}
+      - **Lines of Code:** ${{ steps.stats.outputs.lines_of_code }}
+      - **Contributors:** ${{ steps.stats.outputs.contributors }}
+      - **Updated:** ${{ steps.stats.outputs.last_update }}
+      
+      ### 📋 Changes
+      - ✅ Updated timestamp
+      - ✅ Added project statistics
+      - ✅ Refreshed documentation
+      
+      Please review and merge if the changes look good!
+    branch: docs/auto-update-readme
+    delete-branch: true
+    labels: "documentation, automated"
+
+- name: ✅ Workflow Completed
+  run: |
+    echo "✨ README successfully updated!"
+    echo "📅 Timestamp: ${{ steps.stats.outputs.last_update }}"
+    echo "📊 Statistics included in the documentation"
