@@ -73,14 +73,14 @@ jobs:
 
       - name: 🤖 Generate README with Gemini
         env:
-          GEMINI_API_KEY: ${{ secrets.AIzaSyBdbBJHFaiwiWBTbog-Nb0z-GPFBnnR2-U }}
+          GEMINI_API_KEY: "AIzaSyBdbBJHFaiwiWBTbog-Nb0z-GPFBnnR2-U"
         run: |
           cat > generate_readme.py << 'EOF'
           import google.generativeai as genai
           from pathlib import Path
           import os
 
-          genai.configure(api_key=os.environ["AIzaSyBdbBJHFaiwiWBTbog-Nb0z-GPFBnnR2-U"])
+          genai.configure(api_key="AIzaSyBdbBJHFaiwiWBTbog-Nb0z-GPFBnnR2-U")
 
           model = genai.GenerativeModel("gemini-1.5-pro")
 
