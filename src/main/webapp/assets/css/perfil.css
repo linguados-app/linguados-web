@@ -1,91 +1,207 @@
+:root {
+    --purple-main: #6c4cff;
+    --purple-dark: #5436db;
+    --purple-light: #f1edff;
+    --border-gray: #e5e5e5;
+    --text-dark: #3c3c3c;
+    --text-muted: #8b8ea1;
+}
+
+/* Layout Geral */
 .profile-header-card {
     display: flex;
     align-items: center;
     gap: 30px;
-    padding: 40px;
+    padding: 35px;
     margin-bottom: 30px;
+    background: #ffffff;
+    border: 2px solid var(--border-gray);
+    border-bottom: 5px solid var(--border-gray);
+    border-radius: 24px;
 }
 
+/* Avatar com Gradiente Moderno */
 .profile-avatar {
-    width: 100px;
-    height: 100px;
-    background-color: var(--primary-purple);
+    width: 110px;
+    height: 110px;
+    background: linear-gradient(135deg, var(--purple-main), #8c72ff);
     color: white;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 40px;
+    font-size: 44px;
     font-weight: 800;
-    border: 5px solid #DDF4FF;
+    border: 4px solid var(--purple-light);
+    box-shadow: 0 8px 16px rgba(108, 76, 255, 0.15);
 }
 
 .profile-main-info h1 {
     margin: 0;
-    color: var(--text-main);
-    font-size: 32px;
+    color: var(--text-dark);
+    font-size: 30px;
+    font-weight: 800;
 }
 
 .profile-main-info p {
-    color: #afafaf;
-    margin: 5px 0 15px 0;
+    color: var(--text-muted);
+    margin: 6px 0 16px 0;
     font-weight: 700;
+    font-size: 15px;
 }
 
+/* Nivelamento Estilo Duolingo */
 .badge-level {
-    background: #FFC800;
+    background: #ffc800;
     color: white;
-    padding: 5px 15px;
-    border-radius: 20px;
+    padding: 6px 16px;
+    border-radius: 14px;
     font-weight: 800;
-    font-size: 14px;
-    border-bottom: 3px solid #E5A100;
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    border-bottom: 3px solid #e5a100;
+    display: inline-block;
 }
 
+/* Grid de Estatisticas Tatil */
 .profile-stats-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 20px;
+    margin-bottom: 30px;
 }
 
 .stat-box {
     display: flex;
     align-items: center;
-    gap: 15px;
-    padding: 20px;
+    gap: 18px;
+    padding: 22px;
+    background: #ffffff;
+    border: 2px solid var(--border-gray);
+    border-bottom: 5px solid var(--border-gray);
+    border-radius: 20px;
+    transition: transform 0.2s, border-color 0.2s;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
+    border-color: #d0d0d0;
 }
 
 .stat-emoji {
-    font-size: 30px;
+    font-size: 36px;
+    background: #f7f7f7;
+    width: 55px;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 14px;
 }
 
 .stat-data {
     display: flex;
     flex-direction: column;
+    gap: 2px;
 }
 
 .stat-data strong {
-    font-size: 20px;
-    color: var(--text-main);
+    font-size: 22px;
+    color: var(--text-dark);
+    font-weight: 800;
 }
 
 .stat-data small {
-    color: #afafaf;
-    font-weight: 700;
+    color: var(--text-muted);
+    font-weight: 800;
+    font-size: 11px;
+    letter-spacing: 0.7px;
     text-transform: uppercase;
 }
 
+/* Container de Insignias */
+.badges-section {
+    background: #ffffff;
+    border: 2px solid var(--border-gray);
+    border-bottom: 5px solid var(--border-gray);
+    border-radius: 24px;
+    padding: 30px;
+}
+
+.badges-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 20px;
+}
+
+.badge-item {
+    text-align: center;
+    padding: 22px 14px;
+    border: 2px solid var(--border-gray);
+    border-bottom: 5px solid var(--border-gray);
+    border-radius: 20px;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    cursor: help;
+}
+
+.badge-item:hover {
+    transform: scale(1.05);
+    background: var(--purple-light);
+    border-color: var(--purple-main);
+    border-bottom-color: var(--purple-dark);
+}
+
+.badge-icon {
+    font-size: 46px;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.05));
+}
+
+.badge-title {
+    display: block;
+    font-size: 13px;
+    color: var(--text-dark);
+    line-height: 1.3;
+    font-weight: 800;
+}
+
+/* Botoes de Acao */
 .btn-logout {
     display: inline-block;
-    padding: 12px 25px;
-    color: #EA2B2B;
+    padding: 14px 28px;
+    color: #ea2b2b;
     text-decoration: none;
     font-weight: 800;
-    border: 2px solid #EA2B2B;
-    border-radius: 15px;
-    transition: all 0.2s;
+    font-size: 15px;
+    border: 2px solid #ea2b2b;
+    border-bottom: 5px solid #ea2b2b;
+    border-radius: 16px;
+    background: white;
+    transition: all 0.15s;
+    cursor: pointer;
 }
 
 .btn-logout:hover {
-    background: #FFDFE0;
+    background: #ffe3e3;
+    transform: translateY(-1px);
+}
+
+.btn-logout:active {
+    transform: translateY(2px);
+    border-bottom-width: 2px;
+}
+
+.btn-edit-name {
+    color: var(--purple-main);
+    font-weight: 800;
+    transition: color 0.2s;
+}
+
+.btn-edit-name:hover {
+    color: var(--purple-dark);
 }

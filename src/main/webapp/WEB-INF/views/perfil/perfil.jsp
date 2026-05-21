@@ -8,20 +8,28 @@
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/style.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/dashboard.css">
     <link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/perfil.css">
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght=700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700;800&display=swap" rel="stylesheet">
 </head>
 <body class="dashboard-body">
 
     <aside class="sidebar">
         <div class="sidebar-header">
-            <div class="sidebar-logo"><span class="text-purple">L</span><span class="logo-text"> Linguados</span></div>
+            <div class="sidebar-logo"><span class="text-purple" style="font-weight:800">L</span><span class="logo-text"> Linguados</span></div>
         </div>
         <nav style="display:flex; flex-direction:column; gap:10px; flex-grow:1; padding: 20px 0;">
             <a href="${pageContext.request.contextPath}/dashboard" class="nav-link">📊 <span class="nav-text">Dashboard</span></a>
-            <a href="${pageContext.request.contextPath}/desafios" class="nav-link">📖 <span class="nav-text">Lessons</span></a>
+            <a href="${pageContext.request.contextPath}/lessons" class="nav-link">📖 <span class="nav-text">Lessons</span></a>
             <a href="${pageContext.request.contextPath}/ranking" class="nav-link">🏆 <span class="nav-text">Ranking</span></a>
             <a href="${pageContext.request.contextPath}/chat" class="nav-link">💬 <span class="nav-text">Chat</span></a>
             <a href="${pageContext.request.contextPath}/perfil" class="nav-link active">👤 <span class="nav-text">Perfil</span></a>
+
+            <%-- RESTRIÇÃO DE SEGURANÇA: Exibe o botão de gerenciamento apenas se for Admin --%>
+            <c:if test="${usuarioLogado.admin}">
+                <hr style="border: 0; border-top: 1px solid #E5E5E5; margin: 10px 20px;">
+                <a href="${pageContext.request.contextPath}/desafios" class="nav-link" style="color: #e03131;">
+                    ⚙️ <span class="nav-text">Gerenciar Desafios</span>
+                </a>
+            </c:if>
         </nav>
     </aside>
 
@@ -32,7 +40,7 @@
             </div>
         </c:if>
 
-        <section class="profile-header-card card" style="position: relative;">
+        <section class="profile-header-card">
             <div class="profile-avatar">
                 ${usuarioLogado.nome.substring(0,1).toUpperCase()}
             </div>
@@ -42,25 +50,25 @@
                 <span class="badge-level">LEVEL ${usuarioLogado.nivel}</span>
             </div>
 
-            <a href="#modalEditarNome" class="admin-link" style="position: absolute; top: 24px; right: 24px; font-size: 14px; text-decoration: none;">✏️ Editar Nome</a>
+            <a href="#modalEditarNome" class="btn-edit-name" style="position: absolute; top: 24px; right: 24px; font-size: 14px; text-decoration: none;">✏️ Editar Nome</a>
         </section>
 
         <section class="profile-stats-grid">
-            <div class="card stat-box">
+            <div class="stat-box">
                 <span class="stat-emoji">🔥</span>
                 <div class="stat-data">
                     <strong>${usuarioLogado.streak}</strong>
                     <small>Day Streak</small>
                 </div>
             </div>
-            <div class="card stat-box">
+            <div class="stat-box">
                 <span class="stat-emoji">✨</span>
                 <div class="stat-data">
                     <strong>${usuarioLogado.xp}</strong>
                     <small>Total XP</small>
                 </div>
             </div>
-            <div class="card stat-box">
+            <div class="stat-box">
                 <span class="stat-emoji">📅</span>
                 <div class="stat-data">
                     <strong>${usuarioLogado.ultimoAcesso}</strong>
@@ -69,24 +77,26 @@
             </div>
         </section>
 
-        <section class="card" style="margin-top: 30px; padding: 30px;">
-            <div style="margin-bottom: 20px;">
-                <small class="card-label">CONQUISTAS</small>
-                <h2 style="margin: 0; font-size: 24px; color: var(--text-main);">Minhas Insígnias 🏆</h2>
+        <section class="badges-section">
+            <div style="margin-bottom: 24px;">
+                <small class="dashboard-label">CONQUISTAS</small>
+                <h2 style="margin: 0; font-size: 24px; color: var(--text-dark); font-weight: 800;">Minhas Insígnias 🏆</h2>
             </div>
 
-            <div class="badges-grid" style="display: flex; gap: 20px; flex-wrap: wrap;">
+            <div class="badges-grid">
                 <c:choose>
                     <c:when test="${not empty conquistas}">
                         <c:forEach var="conquista" items="${conquistas}">
-                            <div class="badge-item" title="${conquista.descricao}" style="text-align: center; width: 120px; padding: 20px 15px; border: 2px solid #E5E5E5; border-bottom: 5px solid #E5E5E5; border-radius: 20px; background: #FFF; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                                <div class="badge-icon" style="font-size: 42px; margin-bottom: 8px;">${conquista.badgeIcone}</div>
-                                <strong style="display: block; font-size: 14px; color: var(--text-main); line-height: 1.2; font-weight: 800;">${conquista.titulo}</strong>
+                            <div class="badge-item" title="${conquista.descricao}">
+                                <div class="badge-icon">${conquista.badgeIcone}</div>
+                                <span class="badge-title">${conquista.titulo}</span>
                             </div>
                         </c:forEach>
                     </c:when>
                     <c:otherwise>
-                        <p style="color: #afafaf; font-weight: 700; margin: 0; font-size: 15px;">Nenhuma conquista desbloqueada ainda. Complete desafios para ganhar medalhas!</p>
+                        <p style="color: var(--text-muted); font-weight: 700; margin: 0; font-size: 15px; grid-column: 1 / -1;">
+                            Nenhuma conquista desbloqueada ainda. Complete desafios para ganhar medalhas!
+                        </p>
                     </c:otherwise>
                 </c:choose>
             </div>
@@ -98,18 +108,18 @@
     </main>
 
     <div id="modalEditarNome" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); z-index: 2000; align-items: center; justify-content: center;">
-        <div class="card" style="width: 350px; background: white; padding: 24px; position: relative; border-radius: 20px; font-family: 'Nunito', sans-serif; border: 1px solid #eceff7;">
+        <div class="card" style="width: 350px; background: white; padding: 24px; position: relative; border-radius: 20px; font-family: 'Nunito', sans-serif; border: 2px solid var(--border-gray); border-bottom: 5px solid var(--border-gray);">
             <a href="#" onclick="document.getElementById('modalEditarNome').style.display='none'" style="position: absolute; top: 16px; right: 20px; text-decoration: none; color: #8b8ea1; font-weight: bold; font-size: 18px;">✕</a>
 
-            <h2 style="margin-top: 0; font-size: 18px; margin-bottom: 16px;">Alterar Nome</h2>
+            <h2 style="margin-top: 0; font-size: 18px; margin-bottom: 16px; font-weight: 800;">Alterar Nome</h2>
 
             <form action="${pageContext.request.contextPath}/perfil" method="POST" style="display: flex; flex-direction: column; gap: 14px;">
                 <div>
                     <label style="color: #8b8ea1; font-size: 11px; font-weight: 800; text-transform: uppercase; display: block; margin-bottom: 6px;">Seu Nome</label>
-                    <input type="text" name="nome" value="${usuarioLogado.nome}" required style="width: 100%; padding: 10px; border-radius: 10px; border: 1px solid #eceff7; font-family: inherit; box-sizing: border-box;" />
+                    <input type="text" name="nome" value="${usuarioLogado.nome}" required style="width: 100%; padding: 12px; border-radius: 12px; border: 2px solid var(--border-gray); font-family: inherit; box-sizing: border-box; font-weight: 700;" />
                 </div>
 
-                <button type="submit" style="background: #6c4cff; color: white; border: none; padding: 10px; border-radius: 12px; font-weight: 800; cursor: pointer; font-size: 14px; margin-top: 6px;">
+                <button type="submit" style="background: var(--purple-main); color: white; border: none; padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer; font-size: 14px; margin-top: 6px; border-bottom: 4px solid var(--purple-dark);">
                     Confirmar
                 </button>
             </form>
