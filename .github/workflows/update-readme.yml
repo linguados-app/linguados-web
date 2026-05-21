@@ -28,7 +28,7 @@ jobs:
 
       - name: 📦 Install Dependencies
         run: |
-          pip install google-generativeai markdownify pygments
+          pip install google-genai
 
       - name: 🧠 Analyze Repository Structure
         id: analyze
