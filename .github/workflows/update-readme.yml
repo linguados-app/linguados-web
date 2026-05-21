@@ -68,57 +68,57 @@ jobs:
 ---
 
 ## Funcionalidades (MVP)
-  EOF
-  
-  # Append rest of the file
-  tail -n +12 README.md.backup >> README_temp.md
-  
-  # Replace original
-  mv README_temp.md README.md
-  rm README.md.backup
+          EOF
+          
+          # Append rest of the file
+          tail -n +12 README.md.backup >> README_temp.md
+          
+          # Replace original
+          mv README_temp.md README.md
+          rm README.md.backup
 
-- name: 🔍 Verify Changes
-  run: |
-    echo "📋 README Preview:"
-    head -n 30 README.md
+      - name: 🔍 Verify Changes
+        run: |
+          echo "📋 README Preview:"
+          head -n 30 README.md
 
-- name: 💾 Commit Changes (Direct)
-  if: ${{ !inputs.create_pr || inputs.create_pr == 'false' }}
-  run: |
-    git config --local user.email "action@github.com"
-    git config --local user.name "GitHub Actions Bot"
-    git add README.md
-    git commit -m "docs: auto-update readme with latest statistics [skip ci]"
-    git push
+      - name: 💾 Commit Changes (Direct)
+        if: ${{ !inputs.create_pr || inputs.create_pr == 'false' }}
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Actions Bot"
+          git add README.md
+          git commit -m "docs: auto-update readme with latest statistics [skip ci]"
+          git push
 
-- name: 🔀 Create Pull Request
-  if: ${{ inputs.create_pr == 'true' }}
-  uses: peter-evans/create-pull-request@v5
-  with:
-    commit-message: "docs: auto-update readme with latest statistics"
-    title: "📝 Auto-Update: README Documentation"
-    body: |
-      ## 🤖 Automated README Update
-      
-      This PR updates the README.md with the latest project statistics:
-      
-      - **Commits:** ${{ steps.stats.outputs.commit_count }}
-      - **Lines of Code:** ${{ steps.stats.outputs.lines_of_code }}
-      - **Contributors:** ${{ steps.stats.outputs.contributors }}
-      - **Updated:** ${{ steps.stats.outputs.last_update }}
-      
-      ### 📋 Changes
-      - ✅ Updated timestamp
-      - ✅ Added project statistics
-      - ✅ Refreshed documentation
-      
-      Please review and merge if the changes look good!
-    branch: docs/auto-update-readme
-    delete-branch: true
-    labels: "documentation, automated"
+      - name: 🔀 Create Pull Request
+        if: ${{ inputs.create_pr == 'true' }}
+        uses: peter-evans/create-pull-request@v5
+        with:
+          commit-message: "docs: auto-update readme with latest statistics"
+          title: "📝 Auto-Update: README Documentation"
+          body: |
+            ## 🤖 Automated README Update
+            
+            This PR updates the README.md with the latest project statistics:
+            
+            - **Commits:** ${{ steps.stats.outputs.commit_count }}
+            - **Lines of Code:** ${{ steps.stats.outputs.lines_of_code }}
+            - **Contributors:** ${{ steps.stats.outputs.contributors }}
+            - **Updated:** ${{ steps.stats.outputs.last_update }}
+            
+            ### 📋 Changes
+            - ✅ Updated timestamp
+            - ✅ Added project statistics
+            - ✅ Refreshed documentation
+            
+            Please review and merge if the changes look good!
+          branch: docs/auto-update-readme
+          delete-branch: true
+          labels: "documentation, automated"
 
-- name: ✅ Workflow Completed
-  run: |
-    echo "✨ README successfully updated!"
-    echo "📅 Timestamp: ${{ steps.stats.outputs.last_update }}"
-    echo "📊 Statistics included in the documentation"
+      - name: ✅ Workflow Completed
+        run: |
+          echo "✨ README successfully updated!"
+          echo "📅 Timestamp: ${{ steps.stats.outputs.last_update }}"
+          echo "📊 Statistics included in the documentation"
