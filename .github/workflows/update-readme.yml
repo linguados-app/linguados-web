@@ -1,28 +1,18 @@
-name: 🚀 Ultra README AI Updater
+name: 🤖 AI README Architect
 
 on:
   workflow_dispatch:
-    inputs:
-      create_pr:
-        description: "Criar Pull Request?"
-        required: false
-        default: false
-        type: boolean
 
   schedule:
-    - cron: "0 */12 * * *"
+    - cron: "0 0 * * 0"
 
 permissions:
   contents: write
   pull-requests: write
 
-concurrency:
-  group: readme-updater
-  cancel-in-progress: true
-
 jobs:
-  update-readme:
-    name: 🧠 Smart README Automation
+  ai-readme:
+    name: 🧠 Analyze Repository & Rewrite README
     runs-on: ubuntu-latest
 
     steps:
@@ -31,152 +21,140 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: ⚡ Setup Environment
+      - name: ⚡ Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: 📦 Install Dependencies
         run: |
-          sudo apt-get update
-          sudo apt-get install -y jq cloc
+          pip install google-generativeai markdownify pygments
 
-      - name: 📊 Collect Advanced Repository Stats
-        id: stats
+      - name: 🧠 Analyze Repository Structure
+        id: analyze
         run: |
-          echo "🔍 Coletando métricas..."
+          echo "📂 Generating repository map..."
 
-          COMMIT_COUNT=$(git rev-list --count HEAD)
-          echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
+          tree -I '.git|node_modules|dist|build|venv|__pycache__' -L 4 > structure.txt || true
 
-          CONTRIBUTORS=$(git shortlog -sn --all | wc -l)
-          echo "contributors=$CONTRIBUTORS" >> $GITHUB_OUTPUT
+          echo "📊 Counting languages..."
 
-          BRANCH=$(git branch --show-current)
-          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+          find . -type f | sed 's|^\./||' > files.txt
 
-          LAST_COMMIT=$(git log -1 --pretty=format:'%s')
-          echo "last_commit=$LAST_COMMIT" >> $GITHUB_OUTPUT
+          echo "📜 Extracting important files..."
 
-          LAST_AUTHOR=$(git log -1 --pretty=format:'%an')
-          echo "last_author=$LAST_AUTHOR" >> $GITHUB_OUTPUT
+          mkdir context
 
-          LOC=$(cloc . --json | jq '.SUM.code')
-          echo "loc=$LOC" >> $GITHUB_OUTPUT
+          for file in $(find . \
+            -type f \
+            \( -name "*.py" \
+            -o -name "*.js" \
+            -o -name "*.ts" \
+            -o -name "*.tsx" \
+            -o -name "*.jsx" \
+            -o -name "*.java" \
+            -o -name "*.go" \
+            -o -name "*.rs" \
+            -o -name "*.md" \
+            -o -name "package.json" \
+            -o -name "requirements.txt" \
+            -o -name "pom.xml" \
+            -o -name "Cargo.toml" \
+            \) \
+            ! -path "*/node_modules/*" \
+            ! -path "*/dist/*" \
+            ! -path "*/build/*" \
+            | head -n 120)
+          do
+            echo "========== $file ==========" >> context/repository_context.txt
+            head -n 250 "$file" >> context/repository_context.txt || true
+            echo "" >> context/repository_context.txt
+          done
 
-          FILES=$(find . -type f | wc -l)
-          echo "files=$FILES" >> $GITHUB_OUTPUT
-
-          SIZE=$(du -sh . | cut -f1)
-          echo "size=$SIZE" >> $GITHUB_OUTPUT
-
-          DATE=$(date '+%d/%m/%Y %H:%M UTC')
-          echo "date=$DATE" >> $GITHUB_OUTPUT
-
-      - name: 🎨 Generate Dynamic README Section
+      - name: 🤖 Generate README with Gemini
+        env:
+          GEMINI_API_KEY: ${{ secrets.AIzaSyBdbBJHFaiwiWBTbog-Nb0z-GPFBnnR2-U }}
         run: |
-          cat > AUTO_README.md <<EOF
-          ## 🤖 Projeto Atualizado Automaticamente
+          cat > generate_readme.py << 'EOF'
+          import google.generativeai as genai
+          from pathlib import Path
+          import os
 
-          > Última atualização automática: **${{ steps.stats.outputs.date }}**
+          genai.configure(api_key=os.environ["AIzaSyBdbBJHFaiwiWBTbog-Nb0z-GPFBnnR2-U"])
 
-          ---
+          model = genai.GenerativeModel("gemini-1.5-pro")
 
-          # 📈 Estatísticas do Projeto
+          structure = Path("structure.txt").read_text(errors="ignore")
+          context = Path("context/repository_context.txt").read_text(errors="ignore")
 
-          | Métrica | Valor |
-          |---|---|
-          | 🚀 Commits | ${{ steps.stats.outputs.commit_count }} |
-          | 👥 Contribuidores | ${{ steps.stats.outputs.contributors }} |
-          | 🧠 Linhas de Código | ${{ steps.stats.outputs.loc }} |
-          | 📂 Arquivos | ${{ steps.stats.outputs.files }} |
-          | 💾 Tamanho | ${{ steps.stats.outputs.size }} |
-          | 🌿 Branch Atual | ${{ steps.stats.outputs.branch }} |
+          prompt = f"""
+          You are an elite senior software architect.
 
-          ---
+          Your task:
+          Analyze this repository deeply and generate a PROFESSIONAL README.md.
 
-          # 🔥 Última Atividade
+          IMPORTANT:
+          - Infer what the project does from the source code
+          - Explain architecture
+          - Explain technologies
+          - Explain installation
+          - Explain usage
+          - Explain API/routes if present
+          - Explain folder structure
+          - Detect features automatically
+          - Generate badges
+          - Generate a clean modern README
+          - Add emojis
+          - Generate setup instructions
+          - Generate contributing section
+          - Generate license section
+          - Generate troubleshooting section
+          - Generate roadmap ideas
+          - Generate examples if possible
+          - Make it look like a top GitHub repository
 
-          - ✍️ Último Commit:
-            > "${{ steps.stats.outputs.last_commit }}"
+          REPOSITORY STRUCTURE:
+          {structure}
 
-          - 👤 Autor:
-            > ${{ steps.stats.outputs.last_author }}
+          REPOSITORY CONTENT:
+          {context}
 
-          ---
+          Output ONLY markdown.
+          """
 
-          # ⚡ Status
+          response = model.generate_content(prompt)
 
-          ![GitHub repo size](https://img.shields.io/github/repo-size/${{ github.repository }})
-          ![GitHub stars](https://img.shields.io/github/stars/${{ github.repository }})
-          ![GitHub forks](https://img.shields.io/github/forks/${{ github.repository }})
-          ![GitHub last commit](https://img.shields.io/github/last-commit/${{ github.repository }})
+          readme = response.text
 
-          ---
+          Path("README.md").write_text(readme)
 
+          print("✅ README generated successfully")
           EOF
 
-      - name: 📝 Inject Content Into README
+          python generate_readme.py
+
+      - name: 🔍 Preview README
         run: |
-          touch README.md
+          echo "📋 README Preview:"
+          head -n 80 README.md
 
-          if grep -q "<!-- AUTO_SECTION_START -->" README.md; then
-            sed -i '/<!-- AUTO_SECTION_START -->/,/<!-- AUTO_SECTION_END -->/d' README.md
-          fi
-
-          cat AUTO_README.md > TEMP.md
-          echo "<!-- AUTO_SECTION_START -->" >> TEMP.md
-          cat AUTO_README.md >> TEMP.md
-          echo "<!-- AUTO_SECTION_END -->" >> TEMP.md
-
-          echo "" >> TEMP.md
-          cat README.md >> TEMP.md
-
-          mv TEMP.md README.md
-
-      - name: 🔍 Verify Changes
-        run: |
-          echo "📋 Preview README:"
-          head -n 50 README.md
-
-      - name: ✅ Check For Changes
-        id: verify_diff
+      - name: ✅ Check Changes
+        id: diff
         run: |
           git diff --quiet README.md || echo "changed=true" >> $GITHUB_OUTPUT
 
-      - name: 💾 Commit & Push
-        if: steps.verify_diff.outputs.changed == 'true' && (!inputs.create_pr || inputs.create_pr == 'false')
+      - name: 💾 Commit Changes
+        if: steps.diff.outputs.changed == 'true'
         run: |
-          git config user.name "Ultra README Bot"
-          git config user.email "bot@github.com"
+          git config user.name "AI README Architect"
+          git config user.email "ai-bot@github.com"
 
           git add README.md
 
-          git commit -m "🤖 auto: ultra README update [skip ci]" || exit 0
+          git commit -m "🤖 AI regenerated professional README"
 
           git push
 
-      - name: 🔀 Create Pull Request
-        if: steps.verify_diff.outputs.changed == 'true' && inputs.create_pr == 'true'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          branch: bot/readme-update
-          delete-branch: true
-          title: "🚀 Ultra README Auto Update"
-          commit-message: "🤖 auto: update README"
-          body: |
-            ## 🤖 Atualização Automática
-
-            README atualizado automaticamente.
-
-            ### 📊 Novas Métricas
-            - 🚀 Commits: ${{ steps.stats.outputs.commit_count }}
-            - 👥 Contributors: ${{ steps.stats.outputs.contributors }}
-            - 🧠 LOC: ${{ steps.stats.outputs.loc }}
-
-            ---
-            Gerado automaticamente pelo Ultra README Bot.
-          labels: |
-            documentation
-            automation
-            github-actions
-
       - name: 🎉 Finish
         run: |
-          echo "✅ README atualizado com sucesso!"
-          echo "🚀 Workflow concluído."
+          echo "🚀 README regenerated using AI analysis"
