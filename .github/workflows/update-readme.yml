@@ -1,124 +1,182 @@
-name: 📝 Auto-Update README
+name: 🚀 Ultra README AI Updater
 
 on:
   workflow_dispatch:
     inputs:
       create_pr:
-        description: 'Create Pull Request instead of direct commit?'
+        description: "Criar Pull Request?"
         required: false
-        default: 'false'
+        default: false
         type: boolean
+
   schedule:
-    # Runs every Monday at 00:00 UTC
-    - cron: '0 0 * * 0'
+    - cron: "0 */12 * * *"
 
 permissions:
   contents: write
   pull-requests: write
 
+concurrency:
+  group: readme-updater
+  cancel-in-progress: true
+
 jobs:
   update-readme:
+    name: 🧠 Smart README Automation
     runs-on: ubuntu-latest
-    name: Update README Documentation
 
     steps:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
         with:
-          ref: ${{ github.event.repository.default_branch }}
           fetch-depth: 0
 
-      - name: 📊 Get Repository Stats
+      - name: ⚡ Setup Environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq cloc
+
+      - name: 📊 Collect Advanced Repository Stats
         id: stats
         run: |
-          # Count commits
+          echo "🔍 Coletando métricas..."
+
           COMMIT_COUNT=$(git rev-list --count HEAD)
           echo "commit_count=$COMMIT_COUNT" >> $GITHUB_OUTPUT
-          
-          # Count lines of code
-          LOC=$(find src -name "*.java" -o -name "*.css" -o -name "*.js" | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}')
-          echo "lines_of_code=$LOC" >> $GITHUB_OUTPUT
-          
-          # Get last update date
-          LAST_UPDATE=$(date '+%d de %B de %Y às %H:%M UTC')
-          echo "last_update=$LAST_UPDATE" >> $GITHUB_OUTPUT
-          
-          # Count contributors
-          CONTRIBUTORS=$(git shortlog -sn | wc -l)
+
+          CONTRIBUTORS=$(git shortlog -sn --all | wc -l)
           echo "contributors=$CONTRIBUTORS" >> $GITHUB_OUTPUT
 
-      - name: ✏️ Update README with New Content
+          BRANCH=$(git branch --show-current)
+          echo "branch=$BRANCH" >> $GITHUB_OUTPUT
+
+          LAST_COMMIT=$(git log -1 --pretty=format:'%s')
+          echo "last_commit=$LAST_COMMIT" >> $GITHUB_OUTPUT
+
+          LAST_AUTHOR=$(git log -1 --pretty=format:'%an')
+          echo "last_author=$LAST_AUTHOR" >> $GITHUB_OUTPUT
+
+          LOC=$(cloc . --json | jq '.SUM.code')
+          echo "loc=$LOC" >> $GITHUB_OUTPUT
+
+          FILES=$(find . -type f | wc -l)
+          echo "files=$FILES" >> $GITHUB_OUTPUT
+
+          SIZE=$(du -sh . | cut -f1)
+          echo "size=$SIZE" >> $GITHUB_OUTPUT
+
+          DATE=$(date '+%d/%m/%Y %H:%M UTC')
+          echo "date=$DATE" >> $GITHUB_OUTPUT
+
+      - name: 🎨 Generate Dynamic README Section
         run: |
-          # Create backup
-          cp README.md README.md.backup
-          
-          # Extract header (up to first ## that isn't the title)
-          sed -n '1,/^## Funcionalidades/p' README.md.backup | head -n -1 > README_temp.md
-          
-          # Add updated timestamp section
-          cat >> README_temp.md << EOF
-          
-          > **Última atualização:** ${{ steps.stats.outputs.last_update }}
-          >
-          > **Estatísticas do Projeto:**
-          > - 📊 Total de Commits: ${{ steps.stats.outputs.commit_count }}
-          > - 📝 Linhas de Código: ${{ steps.stats.outputs.lines_of_code }}
-          > - 👥 Contribuidores: ${{ steps.stats.outputs.contributors }}
-          
+          cat > AUTO_README.md <<EOF
+          ## 🤖 Projeto Atualizado Automaticamente
+
+          > Última atualização automática: **${{ steps.stats.outputs.date }}**
+
           ---
-          
-          ## Funcionalidades (MVP)
+
+          # 📈 Estatísticas do Projeto
+
+          | Métrica | Valor |
+          |---|---|
+          | 🚀 Commits | ${{ steps.stats.outputs.commit_count }} |
+          | 👥 Contribuidores | ${{ steps.stats.outputs.contributors }} |
+          | 🧠 Linhas de Código | ${{ steps.stats.outputs.loc }} |
+          | 📂 Arquivos | ${{ steps.stats.outputs.files }} |
+          | 💾 Tamanho | ${{ steps.stats.outputs.size }} |
+          | 🌿 Branch Atual | ${{ steps.stats.outputs.branch }} |
+
+          ---
+
+          # 🔥 Última Atividade
+
+          - ✍️ Último Commit:
+            > "${{ steps.stats.outputs.last_commit }}"
+
+          - 👤 Autor:
+            > ${{ steps.stats.outputs.last_author }}
+
+          ---
+
+          # ⚡ Status
+
+          ![GitHub repo size](https://img.shields.io/github/repo-size/${{ github.repository }})
+          ![GitHub stars](https://img.shields.io/github/stars/${{ github.repository }})
+          ![GitHub forks](https://img.shields.io/github/forks/${{ github.repository }})
+          ![GitHub last commit](https://img.shields.io/github/last-commit/${{ github.repository }})
+
+          ---
+
           EOF
-          
-          # Append rest of the file
-          tail -n +12 README.md.backup >> README_temp.md
-          
-          # Replace original
-          mv README_temp.md README.md
-          rm README.md.backup
+
+      - name: 📝 Inject Content Into README
+        run: |
+          touch README.md
+
+          if grep -q "<!-- AUTO_SECTION_START -->" README.md; then
+            sed -i '/<!-- AUTO_SECTION_START -->/,/<!-- AUTO_SECTION_END -->/d' README.md
+          fi
+
+          cat AUTO_README.md > TEMP.md
+          echo "<!-- AUTO_SECTION_START -->" >> TEMP.md
+          cat AUTO_README.md >> TEMP.md
+          echo "<!-- AUTO_SECTION_END -->" >> TEMP.md
+
+          echo "" >> TEMP.md
+          cat README.md >> TEMP.md
+
+          mv TEMP.md README.md
 
       - name: 🔍 Verify Changes
         run: |
-          echo "📋 README Preview:"
-          head -n 30 README.md
+          echo "📋 Preview README:"
+          head -n 50 README.md
 
-      - name: 💾 Commit Changes (Direct)
-        if: ${{ !inputs.create_pr || inputs.create_pr == 'false' }}
+      - name: ✅ Check For Changes
+        id: verify_diff
         run: |
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Actions Bot"
+          git diff --quiet README.md || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: 💾 Commit & Push
+        if: steps.verify_diff.outputs.changed == 'true' && (!inputs.create_pr || inputs.create_pr == 'false')
+        run: |
+          git config user.name "Ultra README Bot"
+          git config user.email "bot@github.com"
+
           git add README.md
-          git commit -m "docs: auto-update readme with latest statistics [skip ci]"
+
+          git commit -m "🤖 auto: ultra README update [skip ci]" || exit 0
+
           git push
 
       - name: 🔀 Create Pull Request
-        if: ${{ inputs.create_pr == 'true' }}
-        uses: peter-evans/create-pull-request@v5
+        if: steps.verify_diff.outputs.changed == 'true' && inputs.create_pr == 'true'
+        uses: peter-evans/create-pull-request@v6
         with:
-          commit-message: "docs: auto-update readme with latest statistics"
-          title: "📝 Auto-Update: README Documentation"
-          body: |
-            ## 🤖 Automated README Update
-            
-            This PR updates the README.md with the latest project statistics:
-            
-            - **Commits:** ${{ steps.stats.outputs.commit_count }}
-            - **Lines of Code:** ${{ steps.stats.outputs.lines_of_code }}
-            - **Contributors:** ${{ steps.stats.outputs.contributors }}
-            - **Updated:** ${{ steps.stats.outputs.last_update }}
-            
-            ### 📋 Changes
-            - ✅ Updated timestamp
-            - ✅ Added project statistics
-            - ✅ Refreshed documentation
-            
-            Please review and merge if the changes look good!
-          branch: docs/auto-update-readme
+          branch: bot/readme-update
           delete-branch: true
-          labels: "documentation, automated"
+          title: "🚀 Ultra README Auto Update"
+          commit-message: "🤖 auto: update README"
+          body: |
+            ## 🤖 Atualização Automática
 
-      - name: ✅ Workflow Completed
+            README atualizado automaticamente.
+
+            ### 📊 Novas Métricas
+            - 🚀 Commits: ${{ steps.stats.outputs.commit_count }}
+            - 👥 Contributors: ${{ steps.stats.outputs.contributors }}
+            - 🧠 LOC: ${{ steps.stats.outputs.loc }}
+
+            ---
+            Gerado automaticamente pelo Ultra README Bot.
+          labels: |
+            documentation
+            automation
+            github-actions
+
+      - name: 🎉 Finish
         run: |
-          echo "✨ README successfully updated!"
-          echo "📅 Timestamp: ${{ steps.stats.outputs.last_update }}"
-          echo "📊 Statistics included in the documentation"
+          echo "✅ README atualizado com sucesso!"
+          echo "🚀 Workflow concluído."
