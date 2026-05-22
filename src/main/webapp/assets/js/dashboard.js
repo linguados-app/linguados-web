@@ -62,4 +62,21 @@ document.addEventListener('DOMContentLoaded', () => {
             }, index * 50);
         });
     }, 100);
+
+    const btnVerMais = document.getElementById('btn-ver-mais-modulos');
+    if (btnVerMais) {
+        btnVerMais.addEventListener('click', function() {
+            // Seleciona todos os itens que estão escondidos
+            const hiddenItems = document.querySelectorAll('.hidden-trail');
+
+            hiddenItems.forEach(item => {
+                item.classList.remove('hidden-trail'); // Mostra o item
+                // Adiciona uma animação suave de entrada
+                item.style.animation = 'fadeInUp 0.4s ease forwards';
+            });
+
+            // Esconde o botão após mostrar tudo
+            this.style.display = 'none';
+        });
+    }
 });

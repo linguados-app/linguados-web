@@ -115,91 +115,133 @@
         </section>
 
         <div class="lower-grid">
-            <section class="dashboard-card weekly-card">
-                <div class="section-header">
-                    <div>
-                        <small class="dashboard-label">WEEKLY ACTIVITY</small>
-                        <h2>Your progress this week</h2>
-                    </div>
-                </div>
-
-                <div class="weekly-chart-wrapper">
-                    <div class="weekly-bars">
-                        <c:set var="maxAtividade" value="0"/>
-                        <c:forEach items="${atividadeSemana}" var="atividade">
-                            <c:if test="${atividade > maxAtividade}">
-                                <c:set var="maxAtividade" value="${atividade}"/>
-                            </c:if>
-                        </c:forEach>
-
-                        <c:set var="maxHeight" value="${maxAtividade > 0 ? maxAtividade : 5}"/>
-
-                        <div class="bar-item">
-                            <div class="bar-container">
-                                <div class="bar" style="height: ${(atividadeSemana[0] / maxHeight) * 180}px;">
-                                    <span class="bar-value">${atividadeSemana[0]}</span>
-                                </div>
+            <div class="dashboard-left-column">
+                    <section class="dashboard-card weekly-card">
+                        <div class="section-header">
+                            <div>
+                                <small class="dashboard-label">WEEKLY ACTIVITY</small>
+                                <h2>Your progress this week</h2>
                             </div>
-                            <span class="bar-day">Mon</span>
                         </div>
 
-                        <div class="bar-item">
-                            <div class="bar-container">
-                                <div class="bar" style="height: ${(atividadeSemana[1] / maxHeight) * 180}px;">
-                                    <span class="bar-value">${atividadeSemana[1]}</span>
+                        <div class="weekly-chart-wrapper">
+                            <div class="weekly-bars">
+                                <c:set var="maxAtividade" value="0"/>
+                                <c:forEach items="${atividadeSemana}" var="atividade">
+                                    <c:if test="${atividade > maxAtividade}">
+                                        <c:set var="maxAtividade" value="${atividade}"/>
+                                    </c:if>
+                                </c:forEach>
+
+                                <c:set var="maxHeight" value="${maxAtividade > 0 ? maxAtividade : 5}"/>
+
+                                <div class="bar-item">
+                                    <div class="bar-container">
+                                        <div class="bar" style="height: ${(atividadeSemana[0] / maxHeight) * 180}px;">
+                                            <span class="bar-value">${atividadeSemana[0]}</span>
+                                        </div>
+                                    </div>
+                                    <span class="bar-day">Mon</span>
+                                </div>
+
+                                <div class="bar-item">
+                                    <div class="bar-container">
+                                        <div class="bar" style="height: ${(atividadeSemana[1] / maxHeight) * 180}px;">
+                                            <span class="bar-value">${atividadeSemana[1]}</span>
+                                        </div>
+                                    </div>
+                                    <span class="bar-day">Tue</span>
+                                </div>
+
+                                <div class="bar-item">
+                                    <div class="bar-container">
+                                        <div class="bar" style="height: ${(atividadeSemana[2] / maxHeight) * 180}px;">
+                                            <span class="bar-value">${atividadeSemana[2]}</span>
+                                        </div>
+                                    </div>
+                                    <span class="bar-day">Wed</span>
+                                </div>
+
+                                <div class="bar-item">
+                                    <div class="bar-container">
+                                        <div class="bar" style="height: ${(atividadeSemana[3] / maxHeight) * 180}px;">
+                                            <span class="bar-value">${atividadeSemana[3]}</span>
+                                        </div>
+                                    </div>
+                                    <span class="bar-day">Thu</span>
+                                </div>
+
+                                <div class="bar-item">
+                                    <div class="bar-container">
+                                        <div class="bar" style="height: ${(atividadeSemana[4] / maxHeight) * 180}px;">
+                                            <span class="bar-value">${atividadeSemana[4]}</span>
+                                        </div>
+                                    </div>
+                                    <span class="bar-day">Fri</span>
+                                </div>
+
+                                <div class="bar-item">
+                                    <div class="bar-container">
+                                        <div class="bar" style="height: ${(atividadeSemana[5] / maxHeight) * 180}px;">
+                                            <span class="bar-value">${atividadeSemana[5]}</span>
+                                        </div>
+                                    </div>
+                                    <span class="bar-day">Sat</span>
+                                </div>
+
+                                <div class="bar-item">
+                                    <div class="bar-container">
+                                        <div class="bar" style="height: ${(atividadeSemana[6] / maxHeight) * 180}px;">
+                                            <span class="bar-value">${atividadeSemana[6]}</span>
+                                        </div>
+                                    </div>
+                                    <span class="bar-day">Sun</span>
                                 </div>
                             </div>
-                            <span class="bar-day">Tue</span>
                         </div>
+                    </section>
+                    <section class="dashboard-card weekly-card">
+                                    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; gap: 20px;">
+                                        <div>
+                                            <small class="dashboard-label">RANKING</small>
+                                            <h2>Your position in the ranking</h2>
+                                        </div>
 
-                        <div class="bar-item">
-                            <div class="bar-container">
-                                <div class="bar" style="height: ${(atividadeSemana[2] / maxHeight) * 180}px;">
-                                    <span class="bar-value">${atividadeSemana[2]}</span>
-                                </div>
-                            </div>
-                            <span class="bar-day">Wed</span>
-                        </div>
+                                        <%-- Widget de Ranking Estilo Duolingo --%>
+                                        <div class="duolingo-mini-rank">
+                                            <small class="rank-title-badge">Leaderboard context</small>
 
-                        <div class="bar-item">
-                            <div class="bar-container">
-                                <div class="bar" style="height: ${(atividadeSemana[3] / maxHeight) * 180}px;">
-                                    <span class="bar-value">${atividadeSemana[3]}</span>
-                                </div>
-                            </div>
-                            <span class="bar-day">Thu</span>
-                        </div>
+                                            <%-- Competidor de Cima --%>
+                                            <c:if test="${not empty usuarioAcima}">
+                                                <div class="rank-row neighbor">
+                                                    <span class="rank-num">#${posicaoRanking - 1}</span>
+                                                    <span class="rank-name">${usuarioAcima.nome}</span>
+                                                    <span class="rank-xp">${usuarioAcima.xp} XP</span>
+                                                </div>
+                                            </c:if>
 
-                        <div class="bar-item">
-                            <div class="bar-container">
-                                <div class="bar" style="height: ${(atividadeSemana[4] / maxHeight) * 180}px;">
-                                    <span class="bar-value">${atividadeSemana[4]}</span>
-                                </div>
-                            </div>
-                            <span class="bar-day">Fri</span>
-                        </div>
+                                            <%-- VOCÊ (Sempre centralizado e destacado) --%>
+                                            <div class="rank-row active-user">
+                                                <span class="rank-num">#${posicaoRanking}</span>
+                                                <span class="rank-name">${usuarioLogado.nome}</span>
+                                                <span class="rank-xp">${usuarioLogado.xp} XP</span>
+                                            </div>
 
-                        <div class="bar-item">
-                            <div class="bar-container">
-                                <div class="bar" style="height: ${(atividadeSemana[5] / maxHeight) * 180}px;">
-                                    <span class="bar-value">${atividadeSemana[5]}</span>
-                                </div>
-                            </div>
-                            <span class="bar-day">Sat</span>
-                        </div>
+                                            <%-- Competidor de Baixo --%>
+                                            <c:if test="${not empty usuarioAbaixo}">
+                                                <div class="rank-row neighbor">
+                                                    <span class="rank-num">#${posicaoRanking + 1}</span>
+                                                    <span class="rank-name">${usuarioAbaixo.nome}</span>
+                                                    <span class="rank-xp">${usuarioAbaixo.xp} XP</span>
+                                                </div>
+                                            </c:if>
+                                        </div>
+                                    </div>
 
-                        <div class="bar-item">
-                            <div class="bar-container">
-                                <div class="bar" style="height: ${(atividadeSemana[6] / maxHeight) * 180}px;">
-                                    <span class="bar-value">${atividadeSemana[6]}</span>
-                                </div>
-                            </div>
-                            <span class="bar-day">Sun</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
+                                    <%-- ... mantenha o resto do seu código gráfico semanal abaixo ... --%>
+                    </section>
 
+            </div>
             <section class="dashboard-card trails-card">
                 <div class="section-header">
                     <div>
@@ -208,11 +250,11 @@
                     </div>
                 </div>
 
-                <div class="trails-grid">
+                <div class="trails-grid" id="trails-container">
                     <c:choose>
                         <c:when test="${not empty modulosProgresso}">
-                            <c:forEach items="${modulosProgresso}" var="modulo">
-                                <div class="trail-item">
+                            <c:forEach items="${modulosProgresso}" var="modulo" varStatus="status">
+                                <div class="trail-item ${status.index >= 4 ? 'hidden-trail' : ''}">
                                     <div class="trail-top">
                                         <div>
                                             <h3>${modulo.titulo}</h3>
@@ -228,20 +270,21 @@
                         </c:when>
                         <c:otherwise>
                             <div class="trail-item">
-                                <div class="trail-top">
-                                    <div>
-                                        <h3>Nenhum módulo iniciado</h3>
-                                        <p>Comece uma lição para ver seu progresso!</p>
-                                    </div>
-                                </div>
+                                <p>Comece uma lição para ver seu progresso!</p>
                             </div>
                         </c:otherwise>
                     </c:choose>
                 </div>
+
+                <%-- MELHORIA: Botão Ver Mais --%>
+                <c:if test="${modulosProgresso.size() > 4}">
+                    <div style="text-align: center; margin-top: 15px;">
+                        <button id="btn-ver-mais-modulos" class="btn-ver-mais">Ver mais módulos</button>
+                    </div>
+                </c:if>
             </section>
         </div>
     </main>
-
     <script src="${pageContext.request.contextPath}/assets/js/dashboard.js"></script>
 </body>
 </html>

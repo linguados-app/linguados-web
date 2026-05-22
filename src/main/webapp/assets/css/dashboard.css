@@ -874,3 +874,144 @@
 ::-webkit-scrollbar-thumb:hover {
     background: linear-gradient(135deg, #8b5cf6, #a78bfa);
 }
+
+.dashboard-left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;               /* Distância perfeita e controlada entre a Semana e o Ranking */
+    align-self: start;       /* IMPEDE de esticar ou descer por causa do vizinho da direita */
+    height: auto;
+}
+
+/* Garante que o card da semana ocupe a largura total da coluna dele */
+.weekly-card {
+    width: 100%;
+    margin-bottom: 0 !important; /* Reseta margens antigas */
+}
+
+/* Badge de Ranking */
+.user-rank-badge {
+    background: linear-gradient(135deg, #6c4cff 0%, #8b5cf6 100%);
+    padding: 8px 16px;
+    border-radius: 14px;
+    color: white;
+    text-align: right;
+    box-shadow: 0 4px 12px rgba(108, 76, 255, 0.2);
+}
+
+.rank-label {
+    display: block;
+    font-size: 10px;
+    text-transform: uppercase;
+    font-weight: 800;
+    opacity: 0.9;
+}
+
+.rank-number {
+    font-size: 20px;
+    font-weight: 800;
+}
+
+/* Container do Mini Ranking Duolingo (VERSÃO MAIOR) */
+.duolingo-mini-rank {
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 20px;
+    padding: 16px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 5px 0 #e5e7eb;
+    margin-top: 0 !important;
+}
+
+.rank-title-badge {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: #9ca3af;
+    margin-bottom: 12px;
+    letter-spacing: 0.7px;
+}
+
+/* Linhas do Ranking */
+.rank-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    border-radius: 14px;
+    margin-bottom: 6px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 15px;
+}
+
+.rank-row:last-child {
+    margin-bottom: 0;
+}
+
+/* Estilo para os outros competidores */
+.rank-row.neighbor {
+    color: #4b5563;
+    background: #f9fafb;
+}
+
+/* Destaque para o Usuário Logado */
+.rank-row.active-user {
+    background: #f3e8ff;
+    color: #6c4cff;
+    border: 2px solid #c084fc;
+    box-shadow: 0 2px 0 #c084fc;
+}
+
+.rank-num {
+    width: 35px;
+    font-weight: 800;
+    color: #9ca3af;
+    font-size: 15px;
+}
+
+.rank-row.active-user .rank-num {
+    color: #a855f7;
+}
+
+.rank-name {
+    flex-grow: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-right: 12px;
+}
+
+.rank-xp {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 800;
+}
+
+.rank-row.active-user .rank-xp {
+    color: #6c4cff;
+}
+
+/* Lógica de exibir/ocultar módulos */
+.hidden-trail {
+    display: none !important; /* Esconde por padrão */
+}
+
+.btn-ver-mais {
+    background: #f1ecff;
+    color: #6c4cff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: 'Nunito', sans-serif;
+}
+
+.btn-ver-mais:hover {
+    background: #6c4cff;
+    color: white;
+    transform: translateY(-2px);
+}

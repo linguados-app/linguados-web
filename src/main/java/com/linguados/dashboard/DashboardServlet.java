@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import com.linguados.progresso.ProgressoDAO;
+import com.linguados.usuario.UsuarioDAO;
 import com.linguados.modulo.ModuloDAO;
-import com.linguados.modulo.Modulo;
 
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
@@ -27,6 +27,22 @@ public class DashboardServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
+
+        //Rank
+        // 1. Pega o usuário logado da sessão
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
+
+        // 2. Busca a posição dele usando o novo método do DAO
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        int posicao = usuarioDAO.buscarPosicaoRanking(usuarioLogado.getId());
+
+        // 3. Envia o número para o JSP através do request
+        request.setAttribute("posicaoRanking", posicao);
+        Usuario usuarioAcima = usuarioDAO.buscarUsuarioImediatamenteAcima(usuarioLogado.getXp());
+        Usuario usuarioAbaixo = usuarioDAO.buscarUsuarioImediatamenteAbaixo(usuarioLogado.getXp());
+
+        request.setAttribute("usuarioAcima", usuarioAcima);
+        request.setAttribute("usuarioAbaixo", usuarioAbaixo);
 
         // 2. Atualiza dados de streak/XP
         UsuarioService service = new UsuarioService();

@@ -34,6 +34,25 @@ public class UsuarioDAO {
         }
     }
 
+    public int buscarPosicaoRanking(int usuarioId) {
+        String sql = "SELECT COUNT(*) + 1 AS posicao FROM usuario WHERE xp > (SELECT xp FROM usuario WHERE id = ?)";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, usuarioId);
+
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("posicao");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar posição no ranking: " + e.getMessage());
+        }
+        return 1; // Retorna 1 caso seja o primeiro ou ocorra algum erro
+    }
+
     public boolean atualizarNome(int usuarioId, String novoNome) {
         String sql = "UPDATE usuario SET nome = ? WHERE id = ?";
 
@@ -127,7 +146,7 @@ public class UsuarioDAO {
 
     public List<Usuario> buscarRanking() {
         List<Usuario> ranking = new ArrayList<>();
-        String sql = "SELECT nome, xp, nivel FROM usuario ORDER BY xp DESC LIMIT 10";
+        String sql = "SELECT id, nome, xp, nivel FROM usuario ORDER BY xp DESC LIMIT 10";
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql);
@@ -167,5 +186,53 @@ public class UsuarioDAO {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    /**
+     * Busca o usuário que está imediatamente ACIMA do nível de XP atual.
+     */
+    public Usuario buscarUsuarioImediatamenteAcima(int xp) {
+        String sql = "SELECT id, nome, xp, nivel FROM usuario WHERE xp > ? ORDER BY xp ASC LIMIT 1";
+        try (Connection conn = com.linguados.config.DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, xp);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setId(rs.getInt("id"));
+                    u.setNome(rs.getString("nome"));
+                    u.setXp(rs.getInt("xp"));
+                    u.setNivel(rs.getInt("nivel"));
+                    return u;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar vizinho de cima: " + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Busca o usuário que está imediatamente ABAIXO do nível de XP atual.
+     */
+    public Usuario buscarUsuarioImediatamenteAbaixo(int xp) {
+        String sql = "SELECT id, nome, xp, nivel FROM usuario WHERE xp < ? ORDER BY xp DESC LIMIT 1";
+        try (Connection conn = com.linguados.config.DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, xp);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    Usuario u = new Usuario();
+                    u.setId(rs.getInt("id"));
+                    u.setNome(rs.getString("nome"));
+                    u.setXp(rs.getInt("xp"));
+                    u.setNivel(rs.getInt("nivel"));
+                    return u;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar vizinho de baixo: " + e.getMessage());
+        }
+        return null;
     }
 }
