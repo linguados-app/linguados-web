@@ -237,8 +237,6 @@
                                             </c:if>
                                         </div>
                                     </div>
-
-                                    <%-- ... mantenha o resto do seu código gráfico semanal abaixo ... --%>
                     </section>
 
             </div>

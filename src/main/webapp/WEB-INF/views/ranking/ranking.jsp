@@ -12,7 +12,6 @@
 </head>
 <body class="dashboard-body">
 
-    <!-- Sidebar (A mesma do seu Dashboard) -->
     <aside class="sidebar">
         <div class="sidebar-header">
             <div class="sidebar-logo"><span class="text-purple">L</span><span class="logo-text"> Linguados</span></div>
@@ -27,36 +26,47 @@
     </aside>
 
     <main class="main-content">
-        <section class="ranking-section">
-            <div class="card ranking-card">
-                <div class="section-header">
-                    <small class="card-label">LEADERBOARD</small>
-                    <h2>Top Linguados</h2>
-                </div>
+            <section class="ranking-section">
 
-                <div class="ranking-list">
-                    <c:forEach var="u" items="${listaRanking}" varStatus="loop">
-                        <div class="ranking-item ${loop.index < 3 ? 'top-three' : ''}">
-                            <div class="rank-pos">
-                                <c:choose>
-                                    <c:when test="${loop.index == 0}">🥇</c:when>
-                                    <c:when test="${loop.index == 1}">🥈</c:when>
-                                    <c:when test="${loop.index == 2}">🥉</c:when>
-                                    <c:otherwise>${loop.index + 1}</c:otherwise>
-                                </c:choose>
-                            </div>
-                            <div class="rank-name">
-                                <strong>${u.nome}</strong>
-                                <small>Level ${u.nivel}</small>
-                            </div>
-                            <div class="rank-xp">
-                                <span>${u.xp} XP</span>
-                            </div>
+                <div class="card ranking-card">
+
+                    <div class="ranking-card-header">
+                        <img src="${pageContext.request.contextPath}/assets/img/linguado.png" alt="Mascote Pato" class="ranking-pato-img" onerror="this.src='https://fonts.gstatic.com/s/e/notoemoji/latest/1f986/512.webp';">
+                        <div>
+                            <small class="dashboard-label">LEADERBOARD</small>
+                            <h2>Liga Linguado</h2>
                         </div>
-                    </c:forEach>
+                    </div>
+
+                    <div class="ranking-list">
+                        <c:forEach var="u" items="${listaRanking}" varStatus="loop">
+
+                            <c:set var="isCurrentUser" value="${u.nome eq usuarioLogado.nome}" />
+
+                            <div class="ranking-item
+                                ${loop.index == 0 ? 'rank-first' : ''}
+                                ${loop.index == 1 ? 'rank-second' : ''}
+                                ${loop.index == 2 ? 'rank-third' : ''}
+                                ${isCurrentUser ? 'rank-active-user' : ''}">
+
+                                <div class="rank-pos">
+                                    ${loop.index + 1}
+                                </div>
+
+                                <div class="rank-name">
+                                    <strong>${u.nome} <c:if test="${isCurrentUser}"><span class="you-badge">(Você)</span></c:if></strong>
+                                    <small>Level ${u.nivel}</small>
+                                </div>
+
+                                <div class="rank-xp">
+                                    <span>${u.xp} XP</span>
+                                </div>
+                            </div>
+                        </c:forEach>
+                    </div>
+
                 </div>
-            </div>
-        </section>
-    </main>
+            </section>
+        </main>
 </body>
 </html>
