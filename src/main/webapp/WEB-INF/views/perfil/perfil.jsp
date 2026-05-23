@@ -49,8 +49,9 @@
                 <p>${usuarioLogado.email}</p>
                 <span class="badge-level">LEVEL ${usuarioLogado.nivel}</span>
             </div>
-
-            <a href="#modalEditarNome" class="btn-edit-name" style="position: absolute; top: 24px; right: 24px; font-size: 14px; text-decoration: none;">✏️ Editar Nome</a>
+            <a href="#modalEditarNome" class="btn-edit-name">
+                ✏️ Editar Nome
+            </a>
         </section>
 
         <section class="profile-stats-grid">

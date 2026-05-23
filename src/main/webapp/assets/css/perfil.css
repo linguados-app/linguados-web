@@ -205,3 +205,37 @@
 .btn-edit-name:hover {
     color: var(--purple-dark);
 }
+
+.btn-edit-name {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    color: var(--purple-main);
+    border: 2px solid var(--border-gray);
+    border-bottom: 5px solid var(--border-gray); /* Borda grossa para o efeito 3D */
+    border-radius: 14px;
+    font-size: 13px;
+    font-weight: 800;
+    text-transform: uppercase;
+    text-decoration: none;
+    letter-spacing: 0.8px;
+    cursor: pointer;
+    transition: background-color 0.2s, border-color 0.2s;
+}
+
+/* Efeito ao passar o mouse: ganha destaque roxo */
+.btn-edit-name:hover {
+    background-color: #f8f6ff;
+    border-color: var(--purple-main);
+    border-bottom-color: var(--purple-dark);
+    color: var(--purple-main);
+}
+
+/* Efeito do clique: o botão afunda fisicamente simulando um clique real */
+.btn-edit-name:active {
+    transform: translateY(3px);
+    border-bottom-width: 2px;
+    margin-bottom: 3px; /* Compensa o tamanho para não mexer no layout em volta */
+}
