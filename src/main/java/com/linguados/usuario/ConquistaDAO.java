@@ -1,23 +1,76 @@
 package com.linguados.usuario;
 
 import com.linguados.config.DatabaseConfig;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class ConquistaDAO {
 
-    // Busca todas as conquistas que um usuário específico já ganhou
-    public List<Conquista> buscarConquistasPorUsuario(int usuarioId) {
-        List<Conquista> conquistas = new ArrayList<>();
-        String sql = "SELECT c.*, uc.data_desbloqueio FROM conquista c " +
-                "INNER JOIN usuario_conquista uc ON c.id = uc.conquista_id " +
-                "WHERE uc.usuario_id = ? ORDER BY uc.data_desbloqueio DESC";
+    /**
+     * Regista a conquista no perfil do utilizador pelo ID numérico da conquista.
+     * Utiliza INSERT IGNORE para não duplicar se ele refizer o módulo.
+     */
+    public boolean desbloquearConquista(int idUsuario, int idConquista) {
+        String sql = "INSERT IGNORE INTO usuario_conquista (id_usuario, id_conquista) VALUES (?, ?)";
 
         try (Connection conn = DatabaseConfig.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, usuarioId);
+            stmt.setInt(1, idUsuario);
+            stmt.setInt(2, idConquista);
+
+            int linhasAfetadas = stmt.executeUpdate();
+            return java.lang.Integer.valueOf(linhasAfetadas) > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao desbloquear conquista: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Concede uma conquista associando-a pelo código textual (ex: CONQ_MOD_1).
+     * Faz um SELECT dinâmico no INSERT para evitar múltiplas requisições ao banco.
+     */
+    public boolean concederConquista(int idUsuario, String codigoConquista) {
+        String sql = "INSERT IGNORE INTO usuario_conquista (id_usuario, id_conquista) " +
+                "SELECT ?, id FROM conquista WHERE codigo = ?";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idUsuario);
+            stmt.setString(2, codigoConquista);
+
+            int linhasAfetadas = stmt.executeUpdate();
+            return java.lang.Integer.valueOf(linhasAfetadas) > 0;
+
+        } catch (SQLException e) {
+            System.err.println("Erro ao conceder conquista pelo código: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /**
+     * Busca todas as conquistas obtidas por um determinado usuário para exibição no Perfil.
+     */
+    public List<Conquista> buscarConquistasPorUsuario(int idUsuario) {
+        List<Conquista> conquistas = new ArrayList<>();
+        String sql = "SELECT c.* FROM conquista c " +
+                "INNER JOIN usuario_conquista uc ON c.id = uc.id_conquista " +
+                "WHERE uc.id_usuario = ?";
+
+        try (Connection conn = DatabaseConfig.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idUsuario);
+
             try (ResultSet rs = stmt.executeQuery()) {
                 while (rs.next()) {
                     Conquista c = new Conquista();
@@ -27,45 +80,15 @@ public class ConquistaDAO {
                     c.setDescricao(rs.getString("descricao"));
                     c.setBadgeIcone(rs.getString("badge_icone"));
                     c.setXpBonus(rs.getInt("xp_bonus"));
-                    c.setDataDesbloqueio(rs.getTimestamp("data_desbloqueio"));
                     conquistas.add(c);
                 }
             }
+
         } catch (SQLException e) {
+            System.err.println("Erro ao buscar conquistas do usuário: " + e.getMessage());
             e.printStackTrace();
         }
+
         return conquistas;
-    }
-
-    // Registra o desbloqueio se o usuário ainda não possuir a conquista
-    public boolean concederConquista(int usuarioId, String codigoConquista) {
-        String sqlVerificar = "SELECT 1 FROM usuario_conquista uc " +
-                "INNER JOIN conquista c ON uc.conquista_id = c.id " +
-                "WHERE uc.usuario_id = ? AND c.codigo = ?";
-
-        String sqlInserir = "INSERT IGNORE INTO usuario_conquista (usuario_id, conquista_id) " +
-                "SELECT ?, id FROM conquista WHERE codigo = ?";
-
-        try (Connection conn = DatabaseConfig.getConnection()) {
-            // Verifica se já tem
-            try (PreparedStatement stmtVerificar = conn.prepareStatement(sqlVerificar)) {
-                stmtVerificar.setInt(1, usuarioId);
-                stmtVerificar.setString(2, codigoConquista);
-                try (ResultSet rs = stmtVerificar.executeQuery()) {
-                    if (rs.next()) return false; // Já possui a conquista, não faz nada
-                }
-            }
-
-            // Se não tem, insere
-            try (PreparedStatement stmtInserir = conn.prepareStatement(sqlInserir)) {
-                stmtInserir.setInt(1, usuarioId);
-                stmtInserir.setString(2, codigoConquista);
-                int linhasAfetadas = stmtInserir.executeUpdate();
-                return linhasAfetadas > 0;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 }

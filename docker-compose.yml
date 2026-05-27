@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   # Serviço do Banco de Dados
   linguados-db:
@@ -5,14 +7,52 @@ services:
     container_name: linguados-db
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: linguados
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
     ports:
-      - "3306:3306"
+      - "${DB_PORT}:3306"
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
     networks:
       - linguados-net
+
+  # Serviço do Ollama (Inteligência Artificial Local)
+  linguados-ai:
+    image: ollama/ollama:latest
+    container_name: linguados-ai
+    restart: always
+    ports:
+      - "11435:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - linguados-net
+    # LIMITAÇÃO DE RECURSOS: Garante que a IA não trave o seu sistema
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'       # Usa no máximo 2 núcleos de CPU
+          memory: 1500M     # Usa no máximo 1.5GB de Memória RAM
+
+  # SERVIÇO AUTOMÁTICO: Baixa o modelo ultra leve escolhido no .env
+  linguados-ai-miner:
+    image: alpine:latest
+    container_name: linguados-ai-miner
+    depends_on:
+      - linguados-ai
+    networks:
+      - linguados-net
+    entrypoint: [ "/bin/sh", "-c" ]
+    command:
+      - |
+        echo "A aguardar que o servidor Ollama fique online..."
+        while ! nc -z linguados-ai 11434; do
+          sleep 1
+        done
+        echo "Ollama online! A iniciar o download automatico do modelo ${LOCAL_AI_MODEL}..."
+        apk add --no-cache curl
+        curl -X POST http://linguados-ai:11434/api/pull -d "{\"name\": \"${LOCAL_AI_MODEL}\"}"
+        echo "Download do modelo concluido com sucesso!"
 
   # Serviço da Aplicação (Tomcat 10)
   linguados-app:
@@ -23,12 +63,19 @@ services:
       - "8080:8080"
     environment:
       - DB_HOST=linguados-db
-      - DB_PORT=3306
+      - DB_PORT=${DB_PORT}
+      - AI_MODEL=${LOCAL_AI_MODEL} # Passa o nome do modelo ativo para o Java
     depends_on:
-      - linguados-db
+      linguados-db:
+        condition: service_started
+      linguados-ai-miner:
+        condition: service_completed_successfully
     networks:
       - linguados-net
 
 networks:
   linguados-net:
     driver: bridge
+
+volumes:
+  ollama-data:

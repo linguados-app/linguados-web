@@ -60,6 +60,13 @@
                     <div class="feedback-error-msg" style="color: #e03131; font-weight: bold; margin-top: 15px; text-align: center; font-family: 'Nunito', sans-serif;">
                         ❌ Resposta incorreta! Perdeste 1 vida.
                     </div>
+
+                    <%-- Componente Visual: Balão de Feedback Inteligente gerado pelo Ollama --%>
+                    <c:if test="${not empty dicaIA}">
+                        <div class="tutor-ia-bubble" style="background: #f1edff; border: 2px solid #6c4cff; border-bottom: 5px solid #5436db; padding: 16px; border-radius: 20px; margin-top: 20px; color: #3c3c3c; font-size: 14px; font-family: 'Nunito', sans-serif; font-weight: 700; line-height: 1.4; box-shadow: 0 4px 12px rgba(108, 76, 255, 0.08);">
+                            🤖 <strong style="color: #6c4cff;">Dica do Tutor IA:</strong> ${dicaIA}
+                        </div>
+                    </c:if>
                 </c:if>
 
                 <div class="footer-controls">

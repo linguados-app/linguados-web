@@ -1,5 +1,6 @@
 package com.linguados.desafio;
 
+import com.linguados.config.LocalAIService; // Importação para consumo do serviço de IA local
 import com.linguados.usuario.Usuario;
 import com.linguados.usuario.UsuarioService;
 import com.linguados.progresso.ProgressoDAO;
@@ -25,7 +26,7 @@ public class LessonsServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
 
-        // 1. Proteção de Login: Qualquer usuário logado (Admin ou Estudante) pode passar por aqui
+        // 1. Proteção de Início de Sessão (Login): Garante que apenas utilizadores autenticados acedem
         if (usuarioLogado == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return;
@@ -35,19 +36,19 @@ public class LessonsServlet extends HttpServlet {
         String moduloParam = request.getParameter("modulo");
         String actionParam = request.getParameter("action");
 
-        // 2. GATILHO: Voltar/Sair da maratona voluntariamente
+        // 2. GATILHO: Sair da maratona voluntariamente
         if ("sair".equalsIgnoreCase(actionParam)) {
             session.removeAttribute("maratonaAtual");
             session.removeAttribute("vidasMaratona");
+            session.removeAttribute("dicaTutorIA");
             response.sendRedirect(request.getContextPath() + "/lessons");
             return;
         }
 
-        // 3. CENÁRIO A: Rota limpa "/lessons" -> Renderiza a listagem de módulos para ambos os perfis
+        // 3. CENÁRIO A: Rota limpa "/lessons" -> Renderiza a listagem de módulos
         if (idParam == null && moduloParam == null) {
             FilaDesafios maratona = (FilaDesafios) session.getAttribute("maratonaAtual");
 
-            // Se já tem uma maratona ativa, encaminha direto para a lição onde parou
             if (maratona != null && maratona.temProximo()) {
                 response.sendRedirect(request.getContextPath() + "/lessons?id=" + maratona.espiarAtual().getId());
                 return;
@@ -68,7 +69,7 @@ public class LessonsServlet extends HttpServlet {
                 if (listaDesafios != null && !listaDesafios.isEmpty()) {
                     FilaDesafios maratona = new FilaDesafios(idModulo, listaDesafios);
                     session.setAttribute("maratonaAtual", maratona);
-                    session.setAttribute("vidasMaratona", 3); // Define as 3 vidas iniciais
+                    session.setAttribute("vidasMaratona", 3);
 
                     response.sendRedirect(request.getContextPath() + "/lessons?id=" + maratona.espiarAtual().getId());
                 } else {
@@ -100,7 +101,6 @@ public class LessonsServlet extends HttpServlet {
         if (desafio != null) {
             request.setAttribute("desafio", desafio);
 
-            // Injeta variáveis de progresso e gamificação se estiver dentro de uma maratona
             if (maratona != null) {
                 int respondidos = maratona.getTotalInicial() - maratona.getRestantes();
                 int progressoPorcentagem = (int) (((double) respondidos / maratona.getTotalInicial()) * 100);
@@ -113,6 +113,10 @@ public class LessonsServlet extends HttpServlet {
                 request.setAttribute("progresso", 0);
                 request.setAttribute("vidas", 3);
             }
+
+            // Repassa a dica gerada pelo serviço local para o request
+            request.setAttribute("dicaIA", session.getAttribute("dicaTutorIA"));
+            session.removeAttribute("dicaTutorIA");
 
             String view;
             if (desafio instanceof DesafioLacuna) {
@@ -151,8 +155,18 @@ public class LessonsServlet extends HttpServlet {
         Desafio desafio = maratona.espiarAtual();
 
         if (desafio != null && desafio.getId() == desafioId) {
-            if (desafio.verificarResposta(respostaUser)) {
-                // ACERTOU A QUESTÃO
+
+            // 1. Validação primária local: Rápida e sem acionar a IA
+            boolean estaCorreto = desafio.verificarResposta(respostaUser);
+
+            // 2. Validação Semântica via IA: Apenas executa se o estudante errar o texto exato E NÃO for escolha múltipla
+            if (!estaCorreto && !(desafio instanceof DesafioMultiplaEscolha)) {
+                LocalAIService localAI = new LocalAIService();
+                estaCorreto = localAI.validarRespostaSemantica(desafio.getEnunciado(), desafio.getRespostaCorreta(), respostaUser);
+            }
+
+            if (estaCorreto) {
+                // REGISTO DE SUCESSO DO ESTUDANTE
                 if (!progressoDAO.jaConcluiu(usuario.getId(), desafio.getId())) {
                     boolean sucesso = progressoDAO.salvarProgresso(usuario.getId(), desafio.getId(), desafio.getXpRecompensa());
                     if (sucesso) {
@@ -161,7 +175,7 @@ public class LessonsServlet extends HttpServlet {
                     }
                 }
 
-                maratona.removerAtual(); // Avança o ponteiro da fila
+                maratona.removerAtual(); // Avança o ponteiro da fila de lições
 
                 if (maratona.temProximo()) {
                     response.sendRedirect(request.getContextPath() + "/lessons?id=" + maratona.espiarAtual().getId());
@@ -173,18 +187,25 @@ public class LessonsServlet extends HttpServlet {
                     response.sendRedirect(request.getContextPath() + "/dashboard?mensagemConcluido=" + msgCodificada);
                 }
             } else {
-                // ERROU A QUESTÃO -> Penalização de Vidas
+                // PENALIZAÇÃO DE VIDAS
                 int novasVidas = (vidas != null) ? vidas - 1 : 2;
                 session.setAttribute("vidasMaratona", novasVidas);
 
                 if (novasVidas <= 0) {
-                    // GAME OVER total
                     session.removeAttribute("maratonaAtual");
                     session.removeAttribute("vidasMaratona");
+                    session.removeAttribute("dicaTutorIA");
                     String mensagem = "💔 As tuas vidas acabaram! Estuda mais um pouco e tenta a maratona novamente.";
                     String msgCodificada = java.net.URLEncoder.encode(mensagem, java.nio.charset.StandardCharsets.UTF_8);
                     response.sendRedirect(request.getContextPath() + "/dashboard?mensagemError=" + msgCodificada);
                 } else {
+                    // Pede dica à IA apenas se não for escolha múltipla (onde a dica seria redundante)
+                    if (!(desafio instanceof DesafioMultiplaEscolha)) {
+                        LocalAIService localAI = new LocalAIService();
+                        String dicaIA = localAI.pedirDica(desafio.getEnunciado(), respostaUser);
+                        session.setAttribute("dicaTutorIA", dicaIA);
+                    }
+
                     response.sendRedirect(request.getContextPath() + "/lessons?id=" + desafioId + "&feedback=errou");
                 }
             }
