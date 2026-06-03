@@ -9,16 +9,6 @@ O **Linguados** é uma plataforma web de inglês instrumental e técnico desenvo
 
 ---
 
-
-> **Última atualização:** 21 de May de 2026 às 03:58 UTC
->
-> **Estatísticas do Projeto:**
-> - 📊 Total de Commits: 54
-> - 📝 Linhas de Código: 4931
-> - 👥 Contribuidores: 0
-
----
-
 ## Funcionalidades (MVP)
 
 - **Autenticação e Escopos Separados:** Controle estrito de sessões com ambientes e rotas totalmente isoladas para Estudantes (`/lessons`) e Administradores (`/desafios`).
@@ -61,6 +51,27 @@ A aplicação foi desenhada seguindo as boas práticas de baixo acoplamento e se
     
 3. Acesse a aplicação em um navegador através do link a seguir:
  - [Linguados - Plataforma Online de Inglês Instrumental](http://localhost:8080/)
+
+4. Para autenticar no sistema:
+    ```bash
+   # como administrador:
+   login: admin@linguados.com
+   password: admin123
+    ```
+    ```bash
+   # como estudante:
+   login: ian@estudante.com
+   password: user123
+    ```
+Confira o arquivo `initdb/seed.sql` para consultar outras contas disponíveis.
+
+
+### Problemas ao executar?
+
+Se a execução da IA estiver "travando" seu computador, adicione as seguintes linhas em `docker-compose.yml`:
+
+![img.png](img.png)
+Isso limita o uso de memória RAM que o serviço utiliza, evitando complicações.
 
 ## 📂 Estrutura de Pastas
 

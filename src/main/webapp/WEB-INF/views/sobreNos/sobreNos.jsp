@@ -57,7 +57,7 @@
                 <div class="team-grid orientadores-grid">
                     <div class="member-card advisor-card">
                         <div class="member-photo-wrapper">
-                            <img src="${pageContext.request.contextPath}/assets/images/membro1.png" alt="Moniky" class="member-photo" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Moniky';">
+                            <img src="${pageContext.request.contextPath}/assets/images/sara.png" alt="Moniky" class="member-photo" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Moniky';">
                         </div>
                         <h3>Moniky Ribeiro</h3>
                         <span class="member-role">Análise e Projetos de Sistemas</span>
