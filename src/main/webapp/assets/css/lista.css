@@ -1,34 +1,405 @@
+/* ==========================================================
+   LINGUADOS - LISTA DE DESAFIOS
+========================================================== */
+
+:root {
+    --primary-purple: #6C4CF1;
+    --primary-light: #8A74FF;
+    --dark-purple: #5136CC;
+
+    --success-green: #58CC02;
+    --success-dark: #46A302;
+
+    --xp-yellow: #FFC800;
+    --xp-dark: #E5A100;
+
+    --text-main: #1F2430;
+    --text-gray: #7B8191;
+
+    --border-light: #ECEEF5;
+
+    --bg-light: #F5F7FB;
+
+    --shadow-soft:
+            0 10px 30px rgba(108, 76, 241, 0.08);
+
+    --shadow-hover:
+            0 18px 40px rgba(108, 76, 241, 0.16);
+}
+
+/* ==========================================================
+   BASE
+========================================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.bg-light {
+    background: var(--bg-light);
+    min-height: 100vh;
+    font-family: 'Nunito', sans-serif;
+    color: var(--text-main);
+}
+
+/* ==========================================================
+   CONTAINER
+========================================================== */
+
+.container {
+    width: 100%;
+    max-width: 1350px;
+    margin: 0 auto;
+    padding: 40px 28px 70px;
+}
+
+/* ==========================================================
+   HEADER
+========================================================== */
+
+.header-lista {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 40px;
+}
+
+.header-lista h1 {
+    font-size: 44px;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.text-purple {
+    color: var(--primary-purple);
+}
+
+/* ==========================================================
+   BOTÃO VOLTAR
+========================================================== */
+
+.btn-back {
+    text-decoration: none;
+
+    background: white;
+
+    border: 1px solid var(--border-light);
+
+    color: var(--text-main);
+
+    padding: 14px 22px;
+
+    border-radius: 16px;
+
+    font-weight: 800;
+    font-size: 14px;
+
+    transition:
+            transform .2s ease,
+            border-color .2s ease,
+            color .2s ease;
+
+    box-shadow: var(--shadow-soft);
+}
+
+.btn-back:hover {
+    transform: translateY(-2px);
+
+    border-color: var(--primary-purple);
+
+    color: var(--primary-purple);
+}
+
+/* ==========================================================
+   ALERTA
+========================================================== */
+
+.alert-success {
+    background: rgba(88, 204, 2, 0.12);
+
+    border: 1px solid rgba(88, 204, 2, 0.25);
+
+    color: #369400;
+
+    padding: 18px 24px;
+
+    border-radius: 18px;
+
+    max-width: 100%;
+
+    margin-bottom: 30px;
+
+    font-weight: 800;
+
+    text-align: center;
+
+    animation: slideDown .4s ease;
+}
+
+@keyframes slideDown {
+
+    from {
+        transform: translateY(-15px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* ==========================================================
+   GRID
+========================================================== */
+
 .grid-desafios {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 25px;
-    padding: 40px;
-    max-width: 1200px;
-    margin: 0 auto;
+
+    grid-template-columns:
+        repeat(auto-fit, minmax(320px, 1fr));
+
+    gap: 28px;
 }
+
+/* ==========================================================
+   CARD
+========================================================== */
+
 .card-desafio {
     background: white;
-    border: 2px solid #e5e5e5;
-    border-radius: 20px;
-    padding: 24px;
-    text-align: center;
-    transition: transform 0.2s;
+
+    border-radius: 28px;
+
+    border: 1px solid var(--border-light);
+
+    box-shadow: var(--shadow-soft);
+
+    padding: 30px;
+
+    min-height: 250px;
+
+    position: relative;
+
+    overflow: hidden;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    transition:
+            transform .25s ease,
+            box-shadow .25s ease,
+            border-color .25s ease;
 }
+
+/* Linha superior */
+
+.card-desafio::before {
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 6px;
+
+    background:
+            linear-gradient(
+                    90deg,
+                    var(--primary-purple),
+                    var(--primary-light)
+            );
+}
+
+/* Hover */
+
 .card-desafio:hover {
-    transform: translateY(-5px);
-    border-color: var(--primary-purple);
+    transform: translateY(-8px);
+
+    border-color:
+            rgba(108, 76, 241, 0.22);
+
+    box-shadow: var(--shadow-hover);
 }
-.xp-badge {
-    background-color: #FFC800; /* Amarelo "Gema de Ovo" (bem saturado) */
-    color: #000000;            /* Preto para contraste total */
-    padding: 6px 14px;
-    border-radius: 12px;
+
+/* Clique */
+
+.card-desafio:active {
+    transform: scale(.985);
+}
+
+/* ==========================================================
+   INFO
+========================================================== */
+
+.card-info {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* Tipo */
+
+.badge-tipo {
+    width: fit-content;
+
+    background:
+            rgba(108, 76, 241, 0.10);
+
+    color: var(--primary-purple);
+
+    padding: 8px 14px;
+
+    border-radius: 999px;
+
+    font-size: 12px;
+
     font-weight: 800;
-    font-size: 13px;
+
+    letter-spacing: .8px;
+
+    text-transform: uppercase;
+}
+
+/* Título */
+
+.card-desafio h3 {
+    color: var(--text-main);
+
+    font-size: 28px;
+
+    line-height: 1.2;
+
+    font-weight: 800;
+}
+
+/* XP */
+
+.xp-val {
+    width: fit-content;
+
+    background: #FFF5D6;
+
+    color: #D89000;
+
+    padding: 10px 16px;
+
+    border-radius: 14px;
+
+    font-size: 14px;
+
+    font-weight: 800;
+}
+
+/* ==========================================================
+   BOTÃO
+========================================================== */
+
+.btn-play {
+    margin-top: 25px;
+
+    background:
+            linear-gradient(
+                    135deg,
+                    var(--primary-purple),
+                    var(--primary-light)
+            );
+
+    color: white;
+
+    text-decoration: none;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    font-weight: 800;
+
+    font-size: 14px;
+
+    letter-spacing: .5px;
+
     text-transform: uppercase;
 
-    /* Borda inferior escura para tirar o efeito "faded" */
-    border-bottom: 3px solid #E5A100;
-    display: inline-block;
-    text-shadow: 0px 1px 0px rgba(0,0,0,0.1); /* Dá uma leve nitidez ao texto */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    transition:
+            transform .2s ease,
+            opacity .2s ease;
+}
+
+.btn-play:hover {
+    transform: scale(1.02);
+
+    opacity: .95;
+}
+
+/* ==========================================================
+   EMPTY STATE
+========================================================== */
+
+.empty-state {
+    grid-column: 1 / -1;
+
+    background: white;
+
+    border: 1px dashed #D9DDE7;
+
+    border-radius: 30px;
+
+    padding: 70px 30px;
+
+    text-align: center;
+
+    color: var(--text-gray);
+}
+
+.empty-state p {
+    font-size: 24px;
+    font-weight: 800;
+
+    margin-bottom: 10px;
+
+    color: var(--text-main);
+}
+
+.empty-state small {
+    font-size: 15px;
+}
+
+/* ==========================================================
+   RESPONSIVO
+========================================================== */
+
+@media (max-width: 768px) {
+
+    .container {
+        padding: 24px 18px 50px;
+    }
+
+    .header-lista {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .header-lista h1 {
+        font-size: 36px;
+    }
+
+    .grid-desafios {
+        grid-template-columns: 1fr;
+    }
+
+    .card-desafio {
+        min-height: auto;
+    }
 }

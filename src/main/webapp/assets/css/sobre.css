@@ -1,0 +1,139 @@
+/* =======================================================
+   PÁGINA SOBRE NÓS - VERSÃO AMPLIADA (TEXTOS E IMAGENS)
+   ======================================================= */
+
+:root {
+    --purple-main: #6c4cff;
+    --purple-dark: #5436db;
+    --purple-light: #f1edff;
+    --border-gray: #e5e7eb;
+    --text-dark: #3c3c3c;
+    --text-muted: #8b8ea1;
+}
+
+.sobre-section {
+    max-width: 1200px; /* Aumentado para caber cards maiores */
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.sobre-card {
+    background: #ffffff;
+    border: 2px solid var(--border-gray);
+    border-radius: 28px;
+    padding: 40px;
+    box-shadow: 0 8px 0 var(--border-gray);
+}
+
+/* Cabeçalhos (Aumentados) */
+.sobre-header-card {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    padding-bottom: 25px;
+    border-bottom: 2px solid #f3f4f6;
+    margin-bottom: 35px;
+}
+
+.section-divider {
+    margin-top: 60px;
+}
+
+.sobre-pato-img {
+    width: 80px; /* Mascote maior */
+    height: 80px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.sobre-header-card h2 {
+    margin: 0;
+    font-size: 32px; /* Título maior */
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.sobre-subtitle {
+    color: var(--text-muted);
+    font-size: 17px; /* Subtítulo maior */
+    font-weight: 700;
+    margin-top: 6px;
+}
+
+/* Grids (Ajustados para cards maiores) */
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+    justify-content: center;
+}
+
+.orientadores-grid {
+    grid-template-columns: repeat(auto-fit, minmax(350px, 500px));
+}
+
+/* Cards dos Membros (Aumentados) */
+.member-card {
+    background: #ffffff;
+    border: 2px solid var(--border-gray);
+    border-bottom: 6px solid var(--border-gray);
+    border-radius: 24px;
+    padding: 35px 25px;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.member-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--purple-main);
+    border-bottom-color: var(--purple-dark);
+}
+
+/* Fotos (Muito maiores: de 100px para 150px) */
+.member-photo-wrapper {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto 20px auto;
+    border-radius: 50%;
+    border: 5px solid var(--purple-light);
+    overflow: hidden;
+    background: #f9fafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.member-photo {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+}
+
+/* Textos internos (Aumentados) */
+.member-card h3 {
+    margin: 0 0 10px 0;
+    font-size: 20px; /* Nome maior */
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.member-role {
+    display: inline-block;
+    font-size: 14px; /* Cargo maior */
+    font-weight: 800;
+    color: var(--purple-main);
+    background-color: var(--purple-light);
+    padding: 8px 16px;
+    border-radius: 14px;
+}
+
+.advisor-card .member-role {
+    color: #0ca678;
+    background-color: #e6fcf5;
+}
+
+@media (max-width: 768px) {
+    .sobre-header-card { flex-direction: column; text-align: center; }
+    .team-grid { grid-template-columns: 1fr; }
+}

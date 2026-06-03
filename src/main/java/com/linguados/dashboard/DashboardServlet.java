@@ -1,14 +1,16 @@
 package com.linguados.dashboard;
 
 import com.linguados.usuario.Usuario;
+import com.linguados.usuario.UsuarioService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-
+import jakarta.servlet.http.*;
 import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+import com.linguados.progresso.ProgressoDAO;
+import com.linguados.usuario.UsuarioDAO;
+import com.linguados.modulo.ModuloDAO;
 
 @WebServlet("/dashboard")
 public class DashboardServlet extends HttpServlet {
@@ -17,22 +19,51 @@ public class DashboardServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        // 1. SEGURANÇA: Recupera a sessão e o usuário
         HttpSession session = request.getSession();
         Usuario usuario = (Usuario) session.getAttribute("usuarioLogado");
 
-        // 2. REDIRECIONAMENTO: Se não estiver logado, volta para o login
+        // 1. Segurança: Verifica se está logado antes de qualquer coisa
         if (usuario == null) {
-            response.sendRedirect("login");
+            response.sendRedirect(request.getContextPath() + "/login");
             return;
         }
 
-        // 3. LOGICA DE NEGÓCIO (Opcional):
-        // Se você quiser buscar dados em tempo real (como o ranking atual),
-        // você chamaria um DAO aqui e colocaria no request.
-        // Exemplo: request.setAttribute("topUsuarios", rankingDAO.listarTop5());
+        //Rank
+        // 1. Pega o usuário logado da sessão
+        Usuario usuarioLogado = (Usuario) session.getAttribute("usuarioLogado");
 
-        // 4. EXIBIÇÃO: Encaminha para o JSP que criamos
+        // 2. Busca a posição dele usando o novo método do DAO
+        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        int posicao = usuarioDAO.buscarPosicaoRanking(usuarioLogado.getId());
+
+        // 3. Envia o número para o JSP através do request
+        request.setAttribute("posicaoRanking", posicao);
+        Usuario usuarioAcima = usuarioDAO.buscarUsuarioImediatamenteAcima(usuarioLogado.getXp());
+        Usuario usuarioAbaixo = usuarioDAO.buscarUsuarioImediatamenteAbaixo(usuarioLogado.getXp());
+
+        request.setAttribute("usuarioAcima", usuarioAcima);
+        request.setAttribute("usuarioAbaixo", usuarioAbaixo);
+
+        // 2. Atualiza dados de streak/XP
+        UsuarioService service = new UsuarioService();
+        usuario = service.atualizarStreak(usuario);
+        session.setAttribute("usuarioLogado", usuario);
+
+        ProgressoDAO progressoDAO = new ProgressoDAO();
+        ModuloDAO moduloDAO = new ModuloDAO();
+
+        // Dados do dashboard
+        int licoesHoje = progressoDAO.getLicoesConcluidasHoje(usuario.getId());
+        int[] atividadeSemana = progressoDAO.getAtividadeSemana(usuario.getId());
+
+        // Buscar módulos com progresso do usuário
+        List<Map<String, Object>> modulosProgresso = progressoDAO.getModulosComProgresso(usuario.getId());
+
+        request.setAttribute("licoesHoje", licoesHoje);
+        request.setAttribute("atividadeSemana", atividadeSemana);
+        request.setAttribute("modulosProgresso", modulosProgresso);
+
+        // 3. Renderiza a Dashboard
         request.getRequestDispatcher("/WEB-INF/views/dashboard.jsp").forward(request, response);
     }
 }

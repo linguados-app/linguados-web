@@ -1,0 +1,51 @@
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.option-card {
+    cursor: pointer;
+    position: relative;
+    display: block;
+}
+
+/* Esconde o input original */
+.option-card input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+}
+
+/* O "Card" customizado */
+.option-text {
+    display: block;
+    padding: 18px 25px;
+    background: white;
+    border: 2px solid var(--border-light);
+    border-bottom: 4px solid var(--border-light);
+    border-radius: 15px;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text-main);
+    transition: all 0.1s;
+}
+
+.option-card:hover .option-text {
+    background-color: #F7F7F7;
+    border-color: #CECECE;
+}
+
+/* Estilo quando selecionado */
+.option-card input[type="radio"]:checked + .option-text {
+    background-color: #DDF4FF;
+    border-color: #1899D6;
+    border-bottom-color: #1899D6;
+    color: #1899D6;
+}
+
+/* Estilo para feedback imediato no clique */
+.option-card:active .option-text {
+    transform: translateY(2px);
+    border-bottom-width: 2px;
+}

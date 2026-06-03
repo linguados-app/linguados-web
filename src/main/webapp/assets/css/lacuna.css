@@ -1,0 +1,59 @@
+.lacuna-container {
+    max-width: 700px;
+    margin: 60px auto;
+    text-align: center;
+    font-family: 'Nunito', sans-serif;
+}
+
+/* Box onde a frase aparece */
+.sentence-display {
+    background-color: #FFFFFF;
+    border: 2px solid #E5E5E5;
+    padding: 40px 30px;
+    border-radius: 25px;
+    margin-bottom: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    box-shadow: 0 4px 0 #E5E5E5;
+}
+
+.texto-parte {
+    font-size: 26px;
+    font-weight: 700;
+    color: #3C3C3C;
+}
+
+/* O Campo de Input no meio da frase */
+.input-lacuna {
+    border: none;
+    border-bottom: 3px solid #8A2BE2;
+    background: #F7F7F7;
+    width: 140px;
+    font-size: 26px;
+    font-weight: 800;
+    text-align: center;
+    color: #8A2BE2;
+    outline: none;
+    padding: 5px;
+    border-radius: 8px 8px 0 0;
+    transition: background 0.2s;
+}
+
+.input-lacuna:focus {
+    background: #F0E6FF;
+    border-bottom-color: #6A1B9A;
+}
+
+/* Feedback visual de erro (sacudida) */
+.shake-error {
+    animation: shake 0.4s;
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-8px); }
+    75% { transform: translateX(8px); }
+}

@@ -5,26 +5,41 @@
 ![MySQL](https://img.shields.io/badge/MySQL-00000F?style=for-the-badge&logo=mysql&logoColor=white)
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 
-O **Linguados** é uma aplicação focada no ensino de inglês técnico para profissionais de TI. Através de desafios de tradução, interpretação de código e preenchimento de lacunas, o desenvolvedor pratica o idioma enquanto reforça conceitos de programação.
+O **Linguados** é uma plataforma web de inglês instrumental e técnico desenvolvida sob medida para profissionais de TI. Através de maratonas dinâmicas de exercícios práticos, a aplicação une o aprendizado do idioma à fixação de conceitos de engenharia de software, banco de dados e arquitetura de sistemas.
+
+---
+
+
+> **Última atualização:** 21 de May de 2026 às 03:58 UTC
+>
+> **Estatísticas do Projeto:**
+> - 📊 Total de Commits: 54
+> - 📝 Linhas de Código: 4931
+> - 👥 Contribuidores: 0
 
 ---
 
 ## Funcionalidades (MVP)
 
-- **Sistema de Login:** Cadastro e autenticação de estudantes.
-- **Trilhas de Estudo:** Módulos categorizados por nível e tema (ex: Sintaxe, DevOps, SQL).
-- **Gamificação:** Acúmulo de XP, contador de ofensiva (streaks) e ranking.
-- **Motor de Desafios:** Validação polimórfica de respostas em tempo real.
+- **Autenticação e Escopos Separados:** Controle estrito de sessões com ambientes e rotas totalmente isoladas para Estudantes (`/lessons`) e Administradores (`/desafios`).
+- **Trilhas Contínuas (30 Módulos):** Catálogo robusto cobrindo desde leitura de documentações técnicas, comandos Linux, arquitetura limpa até SQL Avançado.
+- **Mecanismo de Maratona Estilo Duolingo:** Fila dinâmica de desafios (`FilaDesafios`) processada em tempo real com controle tátil de progresso (%) e **sistema de vidas (3 corações)** com ejeção automática por *Game Over*.
+- **Polimorfismo Pedagógico:** Motor de desafios inteligente capaz de processar e validar dinamicamente três tipos distintos de questões:
+    * *Tradução Literal* (`DesafioTraducao`)
+    * *Preenchimento de Lacunas de Código* (`DesafioLacuna`)
+    * *Múltipla Escolha Conceitual* (`DesafioMultiplaEscolha`)
 
 ## 🛠 Arquitetura e Tecnologias
 
-O projeto utiliza uma estrutura modular baseada em **Package by Feature**, facilitando a manutenção e escalabilidade.
+A aplicação foi desenhada seguindo as boas práticas de baixo acoplamento e separação de responsabilidades.
 
-- **Linguagem:** Java 25 (LTS)
-- **Gestão de Dependências:** Maven
-- **Banco de Dados:** MySQL 8.0
-- **Infraestrutura:** Docker & Docker Compose
-- **Design Pattern:** MVC (Model-View-Controller)
+* **Linguagem:** Java 21 (LTS)
+* **Padrão Arquitetural:** MVC (Model-View-Controller) nativo com Servlets e JSPs.
+* **Padrão de Persistência:** DAO (Data Access Object) integrado via JDBC puro.
+* **Organização de Código:** *Package by Feature* (Módulos isolados por contexto de domínio).
+* **Banco de Dados:** MySQL 8.0 / MariaDB (Mapeamento de relacionamentos polimórficos um-para-um).
+* **Gerenciador de Build:** Apache Maven
+* **Infraestrutura:** Containers Docker orquestrados via Docker Compose.
 
 ## 📦 Como Executar
 
@@ -35,7 +50,7 @@ O projeto utiliza uma estrutura modular baseada em **Package by Feature**, facil
 
 1. **Clone o repositório:**
    ```bash
-   git clone https://github.com/andreasgunther/linguados-web
+   git clone https://github.com/linguados-app/linguados-web.git
    cd linguados-web
    ```
 
@@ -49,11 +64,35 @@ O projeto utiliza uma estrutura modular baseada em **Package by Feature**, facil
 
 ## 📂 Estrutura de Pastas
 
-    src/main/java/com/linguados/
-    ├── Main.java           # Ponto de entrada (Bootstrap)
-    ├── auth/               # Módulo de Autenticação e Login
-    ├── desafio/            # Core pedagógico e motor de exercícios
-    └── usuario/            # Gestão de perfis e dados do estudante
+    linguados-web/
+    ├── initdb/                               # Scripts de inicializacao automatica do banco
+    │   ├── 01_setup.sql                      # DDL: Estrutura das tabelas e relacionamentos
+    │   └── 02_seed.sql                       # DML: Carga massiva de dados e gamificacao
+    ├── src/main/java/com/linguados/          # Codigo-fonte Java (Package by Feature)
+    │   ├── chat/                             # Motor de comunicacao e WebSockets (Real-time Chat)
+    │   ├── config/                           # Infraestrutura de pooling e conexao com MySQL
+    │   ├── dashboard/                        # Controlador das metricas e graficos semanais
+    │   ├── desafio/                          # Core pedagogico: Modelos polimorficos e Servlets da maratona
+    │   ├── modulo/                           # Gerenciamento de trilhas e catalogos de modulos
+    │   ├── perfil/                           # Visualizacao de insignias e edicao de dados do usuario
+    │   ├── progresso/                        # Persistencia e computacao de XP e logs de conclusao
+    │   ├── ranking/                          # Classificacao de estudantes baseada em performance
+    │   └── usuario/                          # Autenticacao, niveis, streaks e controle de perfis
+    ├── src/main/webapp/                      # Interface Web e Recursos Estaticos
+    │   ├── WEB-INF/                          # Diretorio protegido do servidor
+    │   │   ├── views/                        # Paginas JSP segmentadas por contexto
+    │   │   │   ├── admin/                    # Formularios exclusivos de gerenciamento de conteudo
+    │   │   │   ├── chat/                     # Interface do chat global
+    │   │   │   ├── desafio/                  # Templates customizados para cada subclasse de exercicio
+    │   │   │   ├── modulo/                   # Listagem de trilhas para o estudante
+    │   │   │   ├── perfil/                   # Painel tátil de insignias do usuario
+    │   │   │   ├── ranking/                  # Tela de classificacao liderada pelos estudantes
+    │   │   │   └── usuario/                  # Telas de login, cadastro e portal inicial
+    │   │   └── web.xml                       # Descriptor de implantacao e mapeamento do container
+    │   └── assets/                           # Arquivos estaticos expostos (CSS, JS, Imagens)
+    ├── Dockerfile                            # Instrucoes de build da imagem Tomcat da aplicacao
+    ├── docker-compose.yml                    # Orquestracao dos containers (App + Banco MySQL)
+    └── pom.xml                               # Configuracoes do ciclo de vida e dependencias do Maven
 
 ## Metodologia de Desenvolvimento
 
