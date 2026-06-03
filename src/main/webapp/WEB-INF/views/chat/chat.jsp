@@ -17,11 +17,27 @@
             <div class="sidebar-logo"><span class="text-purple">L</span><span class="logo-text"> Linguados</span></div>
         </div>
         <nav style="display:flex; flex-direction:column; gap:10px; flex-grow:1; padding: 20px 0;">
-            <a href="${pageContext.request.contextPath}/dashboard" class="nav-link">📊 <span class="nav-text">Dashboard</span></a>
-            <a href="${pageContext.request.contextPath}/desafios" class="nav-link">📖 <span class="nav-text">Lessons</span></a>
-            <a href="${pageContext.request.contextPath}/ranking" class="nav-link">🏆 <span class="nav-text">Ranking</span></a>
-            <a href="${pageContext.request.contextPath}/chat" class="nav-link active">💬 <span class="nav-text">Chat</span></a>
-            <a href="${pageContext.request.contextPath}/perfil" class="nav-link">👤 <span class="nav-text">Perfil</span></a>
+            <%-- Esta linha identifica automaticamente em que página o utilizador está --%>
+            <c:set var="currentPage" value="${requestScope['jakarta.servlet.forward.servlet_path'] != null ? requestScope['jakarta.servlet.forward.servlet_path'] : pageContext.request.servletPath}" />
+
+            <a href="${pageContext.request.contextPath}/dashboard" class="nav-link ${currentPage.contains('dashboard') ? 'active' : ''}">
+                📊 <span class="nav-text">Dashboard</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/lessons" class="nav-link ${currentPage.contains('lessons') ? 'active' : ''}">
+                📖 <span class="nav-text">Lessons</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/ranking" class="nav-link ${currentPage.contains('ranking') ? 'active' : ''}">
+                🏆 <span class="nav-text">Ranking</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/chat" class="nav-link ${currentPage.contains('chat') ? 'active' : ''}">
+                💬 <span class="nav-text">Chat</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/perfil" class="nav-link ${currentPage.contains('perfil') ? 'active' : ''}">
+                👤 <span class="nav-text">Perfil</span>
+            </a>
+            <a href="${pageContext.request.contextPath}/sobre" class="nav-link ${currentPage.contains('sobre') ? 'active' : ''}">
+                🦆 <span class="nav-text">Sobre Nós</span>
+            </a>
         </nav>
     </aside>
 
