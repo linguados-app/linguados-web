@@ -9,16 +9,6 @@ O **Linguados** é uma plataforma web de inglês instrumental e técnico desenvo
 
 ---
 
-## Funcionalidades (MVP)
-
-- **Autenticação e Escopos Separados:** Controle estrito de sessões com ambientes e rotas totalmente isoladas para Estudantes (`/lessons`) e Administradores (`/desafios`).
-- **Trilhas Contínuas (30 Módulos):** Catálogo robusto cobrindo desde leitura de documentações técnicas, comandos Linux, arquitetura limpa até SQL Avançado.
-- **Mecanismo de Maratona Estilo Duolingo:** Fila dinâmica de desafios (`FilaDesafios`) processada em tempo real com controle tátil de progresso (%) e **sistema de vidas (3 corações)** com ejeção automática por *Game Over*.
-- **Polimorfismo Pedagógico:** Motor de desafios inteligente capaz de processar e validar dinamicamente três tipos distintos de questões:
-    * *Tradução Literal* (`DesafioTraducao`)
-    * *Preenchimento de Lacunas de Código* (`DesafioLacuna`)
-    * *Múltipla Escolha Conceitual* (`DesafioMultiplaEscolha`)
-
 ## 🛠 Arquitetura e Tecnologias
 
 A aplicação foi desenhada seguindo as boas práticas de baixo acoplamento e separação de responsabilidades.
@@ -71,6 +61,7 @@ Confira o arquivo `initdb/seed.sql` para consultar outras contas disponíveis.
 Se a execução da IA estiver "travando" seu computador, adicione as seguintes linhas em `docker-compose.yml`:
 
 ![img.png](img.png)
+
 Isso limita o uso de memória RAM que o serviço utiliza, evitando complicações.
 
 ## 📂 Estrutura de Pastas
