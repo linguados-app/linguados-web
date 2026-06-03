@@ -65,7 +65,7 @@
 
                     <div class="member-card advisor-card">
                         <div class="member-photo-wrapper">
-                            <img src="${pageContext.request.contextPath}/assets/img/linguado.png" alt="Woquiton" class="member-photo" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Woquiton';">
+                            <img src="${pageContext.request.contextPath}/assets/img/profw.gif" alt="Woquiton" class="member-photo" onerror="this.src='https://api.dicebear.com/7.x/bottts/svg?seed=Woquiton';">
                         </div>
                         <h3>Woquiton Fernandes</h3>
                         <span class="member-role">Programação Orientada a Objetos</span>
