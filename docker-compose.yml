@@ -27,14 +27,11 @@ services:
       - ollama-data:/root/.ollama
     networks:
       - linguados-net
-    # LIMITAÇÃO DE RECURSOS: Garante que a IA não trave o seu sistema
     deploy:
       resources:
         limits:
-          cpus: '2.0'       # Usa no máximo 2 núcleos de CPU
-          memory: 1500M     # Usa no máximo 1.5GB de Memória RAM
+          memory: 3G
 
-  # SERVIÇO AUTOMÁTICO: Baixa o modelo ultra leve escolhido no .env
   linguados-ai-miner:
     image: alpine:latest
     container_name: linguados-ai-miner
@@ -54,7 +51,7 @@ services:
         curl -X POST http://linguados-ai:11434/api/pull -d "{\"name\": \"${LOCAL_AI_MODEL}\"}"
         echo "Download do modelo concluido com sucesso!"
 
-  # Serviço da Aplicação (Tomcat 10)
+  # Serviço da Aplicação
   linguados-app:
     build: .
     container_name: linguados-app
@@ -64,7 +61,7 @@ services:
     environment:
       - DB_HOST=linguados-db
       - DB_PORT=${DB_PORT}
-      - AI_MODEL=${LOCAL_AI_MODEL} # Passa o nome do modelo ativo para o Java
+      - AI_MODEL=${LOCAL_AI_MODEL}
     depends_on:
       linguados-db:
         condition: service_started

@@ -166,7 +166,6 @@ public class LessonsServlet extends HttpServlet {
             }
 
             if (estaCorreto) {
-                // REGISTO DE SUCESSO DO ESTUDANTE
                 if (!progressoDAO.jaConcluiu(usuario.getId(), desafio.getId())) {
                     boolean sucesso = progressoDAO.salvarProgresso(usuario.getId(), desafio.getId(), desafio.getXpRecompensa());
                     if (sucesso) {

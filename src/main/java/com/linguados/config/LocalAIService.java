@@ -29,16 +29,31 @@ public class LocalAIService {
                     .connectTimeout(Duration.ofSeconds(10))
                     .build();
 
-            // Prompt simplificado e direto, otimizado para o desempenho de modelos leves de 1.5B
             String prompt = String.format(
-                    "Você é um avaliador traduções de inglês.\n" +
-                            "Compare a resposta do estudante com a resposta correta esperada.\n\n" +
-                            "Resposta Esperada: \"%s\"\n" +
-                            "Resposta do Estudante: \"%s\"\n\n" +
-                            "Se estiver muito errada e sem sentido algum, responda exatamente: INCORRETO.\n\n" +
-                            "Nos outros casos responda exatamente: CORRETO.\n" +
-                            "Apenas responda com uma palavra (CORRETO ou INCORRETO). Não adicione mais nada.",
-                    respostaCorretaBanco, respostaUsuario
+                    "Sua única tarefa é atuar como um classificador semântico binário estrito.\n" +
+                    "Você deve avaliar se a resposta enviada por um estudante de programação tem sentido " +
+                    "equivalente, aproximado ou relacionável ao gabarito esperado.\n\n" +
+
+                    "[REGRA DE TOLERÂNCIA CALIBRADA]\n" +
+                    "- Seja flexível com sinônimos reais, gírias técnicas ou explicações conceituais (ex: 'vazio', 'nada', 'sem retorno' para o gabarito 'void').\n" +
+                    "- CRÍTICO: Se a resposta do aluno significar o OPOTO, o ANTÔNIMO ou uma contradição direta do gabarito (ex: gabarito é 'vazio'/'void' e o aluno responde 'cheio'), você deve classificar como INCORRETO.\n" +
+                    "- Respostas incorretas por contradição nunca devem ser aceitas.\n\n" +
+
+                    "[EXEMPLOS DE VALIDAÇÃO]\n" +
+                    "- Gabarito: 'void' | Aluno: 'vazio' -> Resposta: CORRETO\n" +
+                    "- Gabarito: 'void' | Aluno: 'não retorna nada' -> Resposta: CORRETO\n" +
+                    "- Gabarito: 'void' | Aluno: 'cheio' -> Resposta: INCORRETO\n" +
+                    "- Gabarito: 'database' | Aluno: 'banco de dados' -> Resposta: CORRETO\n" +
+                    "- Gabarito: 'loop' | Aluno: 'estrutura de repetição' -> Resposta: CORRETO\n\n" +
+
+                    "[DADOS PARA AVALIAÇÃO]\n" +
+                    "<gabarito>%s</gabarito>\n" +
+                    "<resposta_aluno>%s</resposta_aluno>\n\n" +
+
+                    "[RESTRIÇÃO CRÍTICA ABSOLUTA]\n" +
+                    "Sua resposta deve conter EXATAMENTE E APENAS uma das duas palavras: CORRETO ou INCORRETO.\n" +
+                    "Não inclua mais nenhuma letra, pontuação ou justificativa. Responda apenas com a palavra seca.",
+                respostaCorretaBanco, respostaUsuario
             );
 
             JSONObject jsonBody = new JSONObject();
@@ -85,11 +100,28 @@ public class LocalAIService {
                     .build();
 
             String prompt = String.format(
-                    "Você é um tutor de inglês. " +
-                            "O aluno recebeu o seguinte enunciado: '%s'. " +
-                            "Ele respondeu incorretamente: '%s'. " +
-                            "Dê uma dica para a tradução correta, máximo 10 palavras, extremamente curta, máximo de uma linha, nenhuma a mais! Com alguma xarada. Não diga a resposta.",
-                    enunciado, respostaIncorreta
+                    "Sua única tarefa é atuar como um Tutor de Inglês Técnico focado em micro-feedbacks.\n" +
+                    "Um estudante errou um desafio e você deve fornecer uma dica pedagógica curtíssima.\n\n" +
+
+                    "[REGRAS DE CONSTRUÇÃO DA DICA]\n" +
+                    "- NUNCA dê a resposta correta ou a tradução direta.\n" +
+                    "- NÃO justifique o erro e NÃO use frases de efeito (ex: 'Quase lá!', 'Você errou porque...').\n" +
+                    "- Foque na palavra-chave técnica que gerou a confusão.\n" +
+                    "- A dica deve conter apenas uma frase direta com menos de 10 palavras.\n\n" +
+
+                    "[EXEMPLOS DE DICAS CURTAS]\n" +
+                    "- Enunciado: 'loops' | Resposta do Aluno: 'linhas' -> Dica: Pense em estruturas que repetem o código.\n" +
+                    "- Enunciado: 'database' | Resposta do Aluno: 'dados' -> Dica: Refere-se ao local onde armazenamos as tabelas.\n" +
+                    "- Enunciado: 'Framework' | Resposta do Aluno: 'trabalho' -> Dica: É uma estrutura ou conjunto de ferramentas prontas.\n\n" +
+
+                    "[DADOS DO ERRO ATUAL]\n" +
+                    "<enunciado_desafio>%s</enunciado_desafio>\n" +
+                    "<resposta_incorreta_aluno>%s</resposta_incorreta_aluno>\n\n" +
+
+                    "[GATILHO DE SAÍDA]\n" +
+                    "Escreva apenas a micro-dica seca, sem saudações, sem aspas e sem texto adicional.\n" +
+                    "Dica:",
+                enunciado, respostaIncorreta
             );
 
             JSONObject jsonBody = new JSONObject();
